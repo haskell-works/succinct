@@ -7,7 +7,7 @@
 
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
-module HaskellWorks.Data.Json.ValueSpec (spec) where
+module Data.Succinct.Json.ValueSpec (spec) where
 
 import Control.Monad
 import HaskellWorks.Data.BalancedParens.BalancedParens

@@ -7,7 +7,7 @@
 
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
-module HaskellWorks.Data.Json.Standard.GenCursorTest(genTest) where
+module Data.Succinct.Json.Standard.GenCursorTest(genTest) where
 
 import Control.Monad
 import HaskellWorks.Data.BalancedParens.BalancedParens
