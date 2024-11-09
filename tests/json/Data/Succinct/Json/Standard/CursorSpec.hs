@@ -7,9 +7,9 @@
 
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
-module HaskellWorks.Data.Json.Standard.CursorSpec(spec) where
+module Data.Succinct.Json.Standard.CursorSpec(spec) where
 
-import HaskellWorks.Data.Json.Standard.GenCursorTest
+import Data.Succinct.Json.Standard.GenCursorTest
 import Test.Hspec
 
 import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast as FAST

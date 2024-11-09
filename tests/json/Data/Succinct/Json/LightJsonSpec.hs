@@ -8,7 +8,7 @@
 
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
-module HaskellWorks.Data.Json.LightJsonSpec (spec) where
+module Data.Succinct.Json.LightJsonSpec (spec) where
 
 import Control.Monad
 import Data.Text

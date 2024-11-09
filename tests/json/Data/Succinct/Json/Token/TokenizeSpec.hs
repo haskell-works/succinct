@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module HaskellWorks.Data.Json.Token.TokenizeSpec (spec) where
+module Data.Succinct.Json.Token.TokenizeSpec (spec) where
 
 import Data.ByteString                                         (ByteString)
 import HaskellWorks.Data.Json.Internal.Standard.Token.Tokenize

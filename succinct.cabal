@@ -15,13 +15,13 @@ license-file:           LICENSE
 tested-with:            GHC == 9.8.2, GHC == 9.6.6
 build-type:             Simple
 extra-source-files:     README.md
-                        corpus/5000B.json
-                        corpus/5000B.json.bp.idx
-                        corpus/5000B.json.ib.idx
-                        corpus/issue-0001.json
-                        corpus/issue-0001.json.bp.idx
-                        corpus/issue-0001.json.ib.idx
-                        corpus/issue-0001.md
+                        corpus/json/5000B.json
+                        corpus/json/5000B.json.bp.idx
+                        corpus/json/5000B.json.ib.idx
+                        corpus/json/issue-0001.json
+                        corpus/json/issue-0001.json.bp.idx
+                        corpus/json/issue-0001.json.ib.idx
+                        corpus/json/issue-0001.md
 
 source-repository head
   type: git
@@ -118,7 +118,7 @@ library json
                       , vector
                       , word8
   visibility:           public
-  hs-source-dirs:       src
+  hs-source-dirs:       libs/json
   other-modules:        Paths_succinct
   autogen-modules:      Paths_succinct
   exposed-modules:      HaskellWorks.Data.Json.DecodeError
@@ -163,7 +163,7 @@ executable succinct-json
                       , unordered-containers
                       , vector
   main-is:              Main.hs
-  hs-source-dirs:       app
+  hs-source-dirs:       apps/succinct-json
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   other-modules:        App.Commands
                         App.Commands.CreateIndex
@@ -197,16 +197,16 @@ test-suite succinct-json-test
                       , vector
   type:                 exitcode-stdio-1.0
   main-is:              Spec.hs
-  hs-source-dirs:       test
+  hs-source-dirs:       tests/json
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends:   hspec-discover:hspec-discover
-  other-modules:        HaskellWorks.Data.Json.LightJsonSpec
-                        HaskellWorks.Data.Json.Simple.CursorSpec
-                        HaskellWorks.Data.Json.Standard.CursorSpec
-                        HaskellWorks.Data.Json.Standard.GenCursorTest
-                        HaskellWorks.Data.Json.Token.TokenizeSpec
-                        HaskellWorks.Data.Json.TypeSpec
-                        HaskellWorks.Data.Json.ValueSpec
+  other-modules:        Data.Succinct.Json.LightJsonSpec
+                        Data.Succinct.Json.Simple.CursorSpec
+                        Data.Succinct.Json.Standard.CursorSpec
+                        Data.Succinct.Json.Standard.GenCursorTest
+                        Data.Succinct.Json.Token.TokenizeSpec
+                        Data.Succinct.Json.TypeSpec
+                        Data.Succinct.Json.ValueSpec
 
 library json-examples
   import:               base, config
@@ -217,13 +217,13 @@ library json-examples
                       , hw-mquery
                       , hw-prim
                       , succinct-json
-  hs-source-dirs:       examples
+  hs-source-dirs:       examples/json
   other-modules:        Example1
                         Example2
                         Example3
                         Example4
 
-benchmark bench
+benchmark json-bench
   import:               base, config
                       , bytestring
                       , criterion
@@ -233,7 +233,7 @@ benchmark bench
                       , succinct-json
   type:                 exitcode-stdio-1.0
   main-is:              Main.hs
-  hs-source-dirs:       bench
+  hs-source-dirs:       benchmarks/json
 
 test-suite doctest
   import:               base, config

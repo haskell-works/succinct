@@ -7,7 +7,7 @@
 
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
-module HaskellWorks.Data.Json.Simple.CursorSpec
+module Data.Succinct.Json.Simple.CursorSpec
   ( spec
   ) where
 
