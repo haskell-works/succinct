@@ -1,4 +1,4 @@
-packages: .
+packages: . demo
 
 optimization: 2
 
@@ -15,4 +15,5 @@ package hw-simd
   flags: +bmi2
 
 package hw-json-simd
+
   flags: +avx2
