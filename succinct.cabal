@@ -163,7 +163,7 @@ executable succinct-json-app
                       , unordered-containers
                       , vector
   main-is:              Main.hs
-  hs-source-dirs:       components/succinct-json-app
+  hs-source-dirs:       components/succinct-json--app
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   other-modules:        App.Commands
                         App.Commands.CreateIndex
@@ -172,7 +172,7 @@ executable succinct-json-app
                         App.Commands.Demo
                         App.Commands.Types
 
-test-suite succinct-json-tests
+test-suite succinct-json--test
   import:               base, config
                       , aeson
                       , attoparsec
@@ -197,7 +197,7 @@ test-suite succinct-json-tests
                       , vector
   type:                 exitcode-stdio-1.0
   main-is:              Spec.hs
-  hs-source-dirs:       components/succinct-json-tests
+  hs-source-dirs:       components/succinct-json--test
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends:   hspec-discover:hspec-discover
   other-modules:        Data.Succinct.Json.LightJsonSpec
@@ -208,22 +208,7 @@ test-suite succinct-json-tests
                         Data.Succinct.Json.TypeSpec
                         Data.Succinct.Json.ValueSpec
 
-library succinct-json-examples
-  import:               base, config
-                      , aeson
-                      , bytestring
-                      , dlist
-                      , hw-json-standard-cursor
-                      , hw-mquery
-                      , hw-prim
-                      , succinct-json
-  hs-source-dirs:       examples/json
-  other-modules:        Example1
-                        Example2
-                        Example3
-                        Example4
-
-benchmark succinct-json-bench
+benchmark succinct-json--bench
   import:               base, config
                       , bytestring
                       , criterion
@@ -233,4 +218,31 @@ benchmark succinct-json-bench
                       , succinct-json
   type:                 exitcode-stdio-1.0
   main-is:              Main.hs
-  hs-source-dirs:       components/succinct-json-bench
+  hs-source-dirs:       components/succinct-json--bench
+
+test-suite succinct-json--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-json
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-json--doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-json-examples
+  import:               base, config
+                      , aeson
+                      , bytestring
+                      , dlist
+                      , hw-json-standard-cursor
+                      , hw-mquery
+                      , hw-prim
+                      , succinct-json
+  hs-source-dirs:       components/succinct-json-examples
+  other-modules:        Example1
+                        Example2
+                        Example3
+                        Example4
