@@ -1,7 +1,7 @@
 {-# LANGUAGE CPP #-}
 
 #if MIN_VERSION_GLASGOW_HASKELL(8,4,4,0)
-{-# OPTIONS_GHC -F -pgmF doctest-discover -optF config.json #-}
+{-# OPTIONS_GHC -F -pgmF doctest-discover -optF components/succinct-json--doctest/config.json #-}
 #else
 module Main where
 
