@@ -91,9 +91,9 @@ common config
     ghc-options:        -mbmi2 -msse4.2
     cpp-options:        -DBMI2_ENABLED
 
-common succinct-json                  { build-depends: succinct:json                                            }
+common succinct-json                  { build-depends: succinct:succinct-json                                   }
 
-library json
+library succinct-json
   import:               base, config
                       , aeson
                       , attoparsec
@@ -141,7 +141,7 @@ library json
                         HaskellWorks.Data.Json.Standard.Load.Partial
                         HaskellWorks.Data.Json.Value
 
-executable succinct-json
+executable succinct-json-app
   import:               base, config
                       , aeson
                       , bytestring
@@ -208,7 +208,7 @@ test-suite succinct-json-test
                         Data.Succinct.Json.TypeSpec
                         Data.Succinct.Json.ValueSpec
 
-library json-examples
+library succinct-json-examples
   import:               base, config
                       , aeson
                       , bytestring
@@ -223,7 +223,7 @@ library json-examples
                         Example3
                         Example4
 
-benchmark json-bench
+benchmark succinct-json-bench
   import:               base, config
                       , bytestring
                       , criterion
@@ -235,7 +235,7 @@ benchmark json-bench
   main-is:              Main.hs
   hs-source-dirs:       benchmarks/json
 
-test-suite doctest
+test-suite succinct-json-doctest
   import:               base, config
                       , doctest
                       , doctest-discover
