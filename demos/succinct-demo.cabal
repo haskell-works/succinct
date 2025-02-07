@@ -77,5 +77,5 @@ library
                     , succinct-json
                     , vector
   ghc-options:        -O2 -msse4.2
-  other-modules:      Paths_hw_json_demo
-  autogen-modules:    Paths_hw_json_demo
+  other-modules:      Paths_succinct_demo
+  autogen-modules:    Paths_succinct_demo
