@@ -50,6 +50,7 @@ common directory                      { build-depends: directory                
 common dlist                          { build-depends: dlist                          >= 0.8        && < 1.1    }
 common doctest                        { build-depends: doctest                        >= 0.16.2     && < 0.23   }
 common doctest-discover               { build-depends: doctest-discover               >= 0.2        && < 0.3    }
+common filepath                       { build-depends: filepath                       >= 1.4        && < 1.6    }
 common generic-lens                   { build-depends: generic-lens                   >= 1.2.0.1    && < 2.3    }
 common hedgehog                       { build-depends: hedgehog                       >= 0.6        && < 1.5    }
 common hspec                          { build-depends: hspec                          >= 2.4        && < 3      }
@@ -61,7 +62,6 @@ common hw-json-simd {
     build-depends: hw-json-simd               >= 0.1.0.2    && < 0.2
 }
 common hw-json-simple-cursor          { build-depends: hw-json-simple-cursor          >= 0.1.0.1    && < 0.2    }
-common hw-json-standard-cursor        { build-depends: hw-json-standard-cursor        >= 0.2.0.1    && < 0.3    }
 common hw-mquery                      { build-depends: hw-mquery                      >= 0.2.0.0    && < 0.3    }
 common hw-parser                      { build-depends: hw-parser                      >= 0.1        && < 0.2    }
 common hw-prim                        { build-depends: hw-prim                        >= 0.6.2.32   && < 0.7    }
@@ -92,6 +92,7 @@ common config
     cpp-options:        -DBMI2_ENABLED
 
 common succinct-json                  { build-depends: succinct:succinct-json                                   }
+common succinct-json-standard-cursor  { build-depends: succinct:succinct-json-standard-cursor                   }
 
 library succinct-json
   import:               base, config
@@ -104,7 +105,6 @@ library succinct-json
                       , hw-balancedparens
                       , hw-bits
                       , hw-json-simple-cursor
-                      , hw-json-standard-cursor
                       , hw-mquery
                       , hw-parser
                       , hw-prim
@@ -114,6 +114,7 @@ library succinct-json
                       , mmap
                       , prettyprinter
                       , scientific
+                      , succinct-json-standard-cursor
                       , text
                       , vector
                       , word8
@@ -150,7 +151,6 @@ executable succinct-json-app
                       , hw-balancedparens
                       , hw-json-simd
                       , hw-json-simple-cursor
-                      , hw-json-standard-cursor
                       , hw-mquery
                       , hw-prim
                       , hw-rankselect
@@ -159,6 +159,7 @@ executable succinct-json-app
                       , mmap
                       , optparse-applicative
                       , succinct-json
+                      , succinct-json-standard-cursor
                       , text
                       , unordered-containers
                       , vector
@@ -185,13 +186,13 @@ test-suite succinct-json--test
                       , hw-bits
                       , hw-hspec-hedgehog
                       , hw-json-simple-cursor
-                      , hw-json-standard-cursor
                       , hw-mquery
                       , hw-prim
                       , hw-rankselect
                       , hw-rankselect-base
                       , scientific
                       , succinct-json
+                      , succinct-json-standard-cursor
                       , text
                       , transformers
                       , vector
@@ -213,9 +214,9 @@ benchmark succinct-json--bench
                       , bytestring
                       , criterion
                       , directory
-                      , hw-json-standard-cursor
                       , mmap
                       , succinct-json
+                      , succinct-json-standard-cursor
   type:                 exitcode-stdio-1.0
   main-is:              Main.hs
   hs-source-dirs:       components/succinct-json--bench
@@ -237,12 +238,99 @@ library succinct-json-examples
                       , aeson
                       , bytestring
                       , dlist
-                      , hw-json-standard-cursor
                       , hw-mquery
                       , hw-prim
                       , succinct-json
+                      , succinct-json-standard-cursor
   hs-source-dirs:       components/succinct-json-examples
   other-modules:        Example1
                         Example2
                         Example3
                         Example4
+
+library succinct-json-standard-cursor
+  import:               base, config
+                      , array
+                      , bits-extra
+                      , bytestring
+                      , hw-balancedparens
+                      , hw-bits
+                      , hw-json-simd
+                      , hw-prim
+                      , hw-rankselect
+                      , hw-rankselect-base
+                      , mmap
+                      , vector
+                      , word8
+  hs-source-dirs:       components/succinct-json-standard-cursor
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  visibility:           public
+  exposed-modules:      HaskellWorks.Data.Json.Standard.Cursor
+                        HaskellWorks.Data.Json.Standard.Cursor.Fast
+                        HaskellWorks.Data.Json.Standard.Cursor.Generic
+                        HaskellWorks.Data.Json.Standard.Cursor.IbBp
+                        HaskellWorks.Data.Json.Standard.Cursor.Index
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.Blank
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankedJson
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.MakeIndex
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.StateMachine
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.ToBalancedParens64
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.ToInterestBits64
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8
+                        HaskellWorks.Data.Json.Standard.Cursor.Load.Cursor
+                        HaskellWorks.Data.Json.Standard.Cursor.Load.Raw
+                        HaskellWorks.Data.Json.Standard.Cursor.SemiIndex
+                        HaskellWorks.Data.Json.Standard.Cursor.Slow
+                        HaskellWorks.Data.Json.Standard.Cursor.Specific
+                        HaskellWorks.Data.Json.Standard.Cursor.Type
+
+test-suite succinct-json-standard-cursor--tests
+  import:               base, config
+                      , bytestring
+                      , filepath
+                      , hedgehog
+                      , hspec
+                      , hw-balancedparens
+                      , hw-bits
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , hw-rankselect
+                      , hw-rankselect-base
+                      , succinct-json-standard-cursor
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-json-standard-cursor--test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  other-modules:        HaskellWorks.Data.Json.Standard.CorpusSpec
+                        HaskellWorks.Data.Json.Standard.Cursor.BalancedParensSpec
+                        HaskellWorks.Data.Json.Standard.Cursor.InterestBitsSpec
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankSpec
+                        HaskellWorks.Data.Json.Standard.Cursor.TypeSpec
+                        HaskellWorks.Data.Json.Standard.CursorSpec
+                        HaskellWorks.Data.Json.Standard.GenCursorTest
+
+benchmark json-standard-cursor-bench
+  import:               base, config
+                      , bytestring
+                      , criterion
+                      , directory
+                      , mmap
+                      , succinct-json-standard-cursor
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-json-standard-cursor--bench
+
+test-suite succinct-json-standard-cursor--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , bits-extra
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-json-standard-cursor--doctest
+  build-tool-depends:   doctest-discover:doctest-discover
