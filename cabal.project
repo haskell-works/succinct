@@ -11,7 +11,7 @@ package hw-rankselect
 package hw-rankselect-base
   flags: +bmi2
 
-package hw-simd
+package succinct-simd
   flags: +bmi2
 
 package hw-json-simd
