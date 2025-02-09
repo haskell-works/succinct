@@ -5,7 +5,7 @@ optimization: 2
 package bits-extra
   flags: +bmi2
 
-package hw-rankselect
+package succinct-rankselect
   flags: +bmi2
 
 package hw-rankselect-base
