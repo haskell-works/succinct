@@ -1,7 +1,7 @@
 cabal-version:  3.4
 
 name:                   succinct
-version:                1.3.3.0
+version:                0.0.0.1
 synopsis:               Memory efficient JSON parser
 description:            Memory efficient JSON parser. Please see README.md
 category:               Data
