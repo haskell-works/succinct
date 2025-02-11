@@ -71,7 +71,6 @@ common hw-json-simd {
 common hw-mquery                      { build-depends: hw-mquery                      >= 0.2.0.0    && < 0.3    }
 common hw-parser                      { build-depends: hw-parser                      >= 0.1        && < 0.2    }
 common hw-prim                        { build-depends: hw-prim                        >= 0.6.2.32   && < 0.7    }
-common hw-string-parse                { build-depends: hw-string-parse                >= 0.0.0.2    && < 0.1    }
 common lens                           { build-depends: lens                           >= 4          && < 6      }
 common mmap                           { build-depends: mmap                           >= 0.5        && < 0.6    }
 common mtl                            { build-depends: mtl                            >= 2.2        && < 3      }
@@ -104,6 +103,7 @@ common succinct-json-standard-cursor  { build-depends: succinct:succinct-json-st
 common succinct-rankselect            { build-depends: succinct:succinct-rankselect                             }
 common succinct-rankselect-base       { build-depends: succinct:succinct-rankselect-base                        }
 common succinct-simd                  { build-depends: succinct:succinct-simd                                   }
+common succinct-string-parse          { build-depends: succinct:succinct-string-parse                           }
 
 library succinct-balancedparens
   import:               base, config
@@ -286,7 +286,7 @@ library succinct-bits
                       , deepseq
                       , hw-int
                       , hw-prim
-                      , hw-string-parse
+                      , succinct-string-parse
                       , vector
   exposed-modules:      HaskellWorks.Data.Bits
                         HaskellWorks.Data.Bits.AllExcess
@@ -818,8 +818,8 @@ library succinct-rankselect-base
                       , bitvec
                       , hw-int
                       , hw-prim
-                      , hw-string-parse
                       , succinct-bits
+                      , succinct-string-parse
                       , vector
   visibility:           public
   exposed-modules:      HaskellWorks.Data.RankSelect.Base
@@ -983,4 +983,36 @@ test-suite succinct-simd--doctest
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   main-is:              DoctestDriver.hs
   HS-Source-Dirs:       components/succinct-simd--doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-string-parse
+  import:               base, config
+  exposed-modules:      HaskellWorks.Data.String.Parse
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  hs-source-dirs:       components/succinct-string-parse
+  ghc-options:          -Wall -O2 -msse4.2
+
+test-suite succinct-string-parse--test
+  import:               base, config
+                      , QuickCheck
+                      , bytestring
+                      , hspec
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-string-parse--test
+  ghc-options:          -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  build-depends:        hw-string-parse
+
+test-suite succinct-string-parse--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-string-parse
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-string-parse--doctest
   build-tool-depends:   doctest-discover:doctest-discover
