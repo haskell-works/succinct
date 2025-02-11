@@ -8,7 +8,7 @@ package bits-extra
 package succinct-rankselect
   flags: +bmi2
 
-package hw-rankselect-base
+package succinct-rankselect-base
   flags: +bmi2
 
 package succinct-simd

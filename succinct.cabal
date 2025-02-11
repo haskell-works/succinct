@@ -44,6 +44,7 @@ common array                          { build-depends: array                    
 common attoparsec                     { build-depends: attoparsec                     >= 0.13       && < 0.15   }
 common attoparsec-aeson               { build-depends: attoparsec-aeson               >= 2          && < 3      }
 common bits-extra                     { build-depends: bits-extra                     >= 0.0.1.3    && < 0.1    }
+common bitvec                         { build-depends: bitvec                         >= 1.0        && < 1.2    }
 common bytestring                     { build-depends: bytestring                     >= 0.10.6     && < 0.13   }
 common cassava                        { build-depends: cassava                        >= 0.5.1.0    && < 0.6    }
 common conduit                        { build-depends: conduit                        >= 1.2        && < 1.4    }
@@ -69,7 +70,7 @@ common hw-json-simd {
 common hw-mquery                      { build-depends: hw-mquery                      >= 0.2.0.0    && < 0.3    }
 common hw-parser                      { build-depends: hw-parser                      >= 0.1        && < 0.2    }
 common hw-prim                        { build-depends: hw-prim                        >= 0.6.2.32   && < 0.7    }
-common hw-rankselect-base             { build-depends: hw-rankselect-base             >= 0.3.2.1    && < 0.4    }
+common hw-string-parse                { build-depends: hw-string-parse                >= 0.0.0.2    && < 0.1    }
 common lens                           { build-depends: lens                           >= 4          && < 6      }
 common mmap                           { build-depends: mmap                           >= 0.5        && < 0.6    }
 common mtl                            { build-depends: mtl                            >= 2.2        && < 3      }
@@ -99,6 +100,7 @@ common succinct-json                  { build-depends: succinct:succinct-json   
 common succinct-json-simple-cursor    { build-depends: succinct:succinct-json-simple-cursor                     }
 common succinct-json-standard-cursor  { build-depends: succinct:succinct-json-standard-cursor                   }
 common succinct-rankselect            { build-depends: succinct:succinct-rankselect                             }
+common succinct-rankselect-base       { build-depends: succinct:succinct-rankselect-base                        }
 common succinct-simd                  { build-depends: succinct:succinct-simd                                   }
 
 library succinct-balancedparens
@@ -108,7 +110,7 @@ library succinct-balancedparens
                       , hw-excess
                       , hw-int
                       , hw-prim
-                      , hw-rankselect-base
+                      , succinct-rankselect-base
                       , vector
   visibility:           public
   exposed-modules:      HaskellWorks.Data.BalancedParens
@@ -174,6 +176,7 @@ library succinct-balancedparens-gen
                       , hw-prim
                       , succinct-balancedparens
                       , vector
+  visibility:           public
   exposed-modules:      HaskellWorks.Data.BalancedParens.Gen
                         HaskellWorks.Data.BalancedParens.Internal.IO
   hs-source-dirs:       components/succinct-balancedparens-gen
@@ -209,9 +212,9 @@ test-suite succinct-balancedparens--test
                       , hw-hspec-hedgehog
                       , hw-int
                       , hw-prim
-                      , hw-rankselect-base
                       , succinct-balancedparens
                       , succinct-balancedparens-gen
+                      , succinct-rankselect-base
                       , transformers
                       , vector
   type:                 exitcode-stdio-1.0
@@ -280,7 +283,6 @@ library succinct-json
                       , hw-mquery
                       , hw-parser
                       , hw-prim
-                      , hw-rankselect-base
                       , mmap
                       , prettyprinter
                       , scientific
@@ -288,6 +290,7 @@ library succinct-json
                       , succinct-json-simple-cursor
                       , succinct-json-standard-cursor
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , succinct-simd
                       , text
                       , vector
@@ -325,7 +328,6 @@ executable succinct-json-app
                       , hw-json-simd
                       , hw-mquery
                       , hw-prim
-                      , hw-rankselect-base
                       , lens
                       , mmap
                       , optparse-applicative
@@ -334,6 +336,7 @@ executable succinct-json-app
                       , succinct-json-simple-cursor
                       , succinct-json-standard-cursor
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , text
                       , unordered-containers
                       , vector
@@ -360,13 +363,13 @@ test-suite succinct-json--test
                       , hw-hspec-hedgehog
                       , hw-mquery
                       , hw-prim
-                      , hw-rankselect-base
                       , scientific
                       , succinct-balancedparens
                       , succinct-json
                       , succinct-json-simple-cursor
                       , succinct-json-standard-cursor
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , text
                       , transformers
                       , vector
@@ -416,6 +419,7 @@ library succinct-json-examples
                       , hw-prim
                       , succinct-json
                       , succinct-json-standard-cursor
+  visibility:           public
   hs-source-dirs:       components/succinct-json-examples
   other-modules:        Example1
                         Example2
@@ -427,9 +431,9 @@ library succinct-json-simple-cursor
                       , bytestring
                       , hw-bits
                       , hw-prim
-                      , hw-rankselect-base
                       , succinct-balancedparens
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , vector
                       , word8
   visibility:           public
@@ -450,13 +454,13 @@ executable succinct-json-simple-cursor--app
                       , generic-lens
                       , hw-json-simd
                       , hw-prim
-                      , hw-rankselect-base
                       , lens
                       , mmap
                       , optparse-applicative
                       , succinct-balancedparens
                       , succinct-json-simple-cursor
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , text
                       , vector
   main-is:              Main.hs
@@ -474,10 +478,10 @@ test-suite succinct-json-simple-cursor--test
                       , hw-bits
                       , hw-hspec-hedgehog
                       , hw-prim
-                      , hw-rankselect-base
                       , succinct-balancedparens
                       , succinct-json-simple-cursor
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , vector
   type:                 exitcode-stdio-1.0
   main-is:              Spec.hs
@@ -517,16 +521,16 @@ library succinct-json-standard-cursor
                       , hw-bits
                       , hw-json-simd
                       , hw-prim
-                      , hw-rankselect-base
                       , mmap
                       , succinct-balancedparens
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , vector
                       , word8
+  visibility:           public
   hs-source-dirs:       components/succinct-json-standard-cursor
   other-modules:        Paths_succinct
   autogen-modules:      Paths_succinct
-  visibility:           public
   exposed-modules:      HaskellWorks.Data.Json.Standard.Cursor
                         HaskellWorks.Data.Json.Standard.Cursor.Fast
                         HaskellWorks.Data.Json.Standard.Cursor.Generic
@@ -555,10 +559,10 @@ test-suite succinct-json-standard-cursor--test
                       , hw-bits
                       , hw-hspec-hedgehog
                       , hw-prim
-                      , hw-rankselect-base
                       , succinct-balancedparens
                       , succinct-json-standard-cursor
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , vector
   type:                 exitcode-stdio-1.0
   main-is:              Spec.hs
@@ -601,8 +605,8 @@ library succinct-rankselect
                       , deepseq
                       , hw-bits
                       , hw-prim
-                      , hw-rankselect-base
                       , succinct-balancedparens
+                      , succinct-rankselect-base
                       , vector
   visibility:           public
   exposed-modules:      HaskellWorks.Data.RankSelect.CsPoppy
@@ -628,12 +632,12 @@ executable succinct-rankselect--app
                       , generic-lens
                       , hw-bits
                       , hw-prim
-                      , hw-rankselect-base
                       , lens
                       , mmap
                       , mtl
                       , optparse-applicative
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , vector
   main-is:              Main.hs
   other-modules:        App.Commands
@@ -655,10 +659,10 @@ test-suite succinct-rankselect--test
                       , hw-hedgehog
                       , hw-hspec-hedgehog
                       , hw-prim
-                      , hw-rankselect-base
                       , mmap
                       , QuickCheck
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , transformers
                       , vector
   type:                 exitcode-stdio-1.0
@@ -686,10 +690,10 @@ benchmark succinct-rankselect--bench
                       , directory
                       , hw-bits
                       , hw-prim
-                      , hw-rankselect-base
                       , mmap
                       , resourcet
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , vector
   type:                 exitcode-stdio-1.0
   main-is:              Main.hs
@@ -707,6 +711,75 @@ test-suite succinct-rankselect--doctest
   HS-Source-Dirs:       components/succinct-rankselect--doctest
   build-tool-depends:   doctest-discover:doctest-discover
 
+library succinct-rankselect-base
+  import:               base, config
+                      , bits-extra
+                      , bitvec
+                      , hw-bits
+                      , hw-int
+                      , hw-prim
+                      , hw-string-parse
+                      , vector
+  visibility:           public
+  exposed-modules:      HaskellWorks.Data.RankSelect.Base
+                        HaskellWorks.Data.RankSelect.Base.Internal
+                        HaskellWorks.Data.RankSelect.Base.Rank
+                        HaskellWorks.Data.RankSelect.Base.Rank0
+                        HaskellWorks.Data.RankSelect.Base.Rank1
+                        HaskellWorks.Data.RankSelect.Base.Select
+                        HaskellWorks.Data.RankSelect.Base.Select0
+                        HaskellWorks.Data.RankSelect.Base.Select1
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  hs-source-dirs:       components/succinct-rankselect-base
+
+test-suite succinct-rankselect-base--test
+  import:               base, config
+                      , QuickCheck
+                      , bits-extra
+                      , bitvec
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hedgehog
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , succinct-rankselect-base
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  other-modules:        HaskellWorks.Data.RankSelect.Base.InternalSpec
+                        HaskellWorks.Data.RankSelect.Base.Rank0Spec
+                        HaskellWorks.Data.RankSelect.Base.Rank1Spec
+                        HaskellWorks.Data.RankSelect.Base.Select0Spec
+                        HaskellWorks.Data.RankSelect.Base.Select1Spec
+  hs-source-dirs:       components/succinct-rankselect-base--test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+
+benchmark succinct-rankselect-base--bench
+  import:               base, config
+                      , bits-extra
+                      , criterion
+                      , hw-bits
+                      , hw-prim
+                      , succinct-rankselect-base
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-rankselect-base--bench
+
+test-suite succinct-rankselect-base--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-rankselect-base
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-rankselect-base--doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
 library succinct-rankselect-gen
   import:               base, config
                       , deepseq
@@ -715,6 +788,7 @@ library succinct-rankselect-gen
                       , hw-prim
                       , succinct-rankselect
                       , vector
+  visibility:           public
   exposed-modules:      HaskellWorks.Data.RankSelect.Gen
   hs-source-dirs:       components/succinct-rankselect-gen
 
@@ -725,10 +799,11 @@ library succinct-simd
                       , deepseq
                       , hw-bits
                       , hw-prim
-                      , hw-rankselect-base
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , transformers
                       , vector
+  visibility:           public
   exposed-modules:      HaskellWorks.Data.Simd.Capabilities
                         HaskellWorks.Data.Simd.ChunkString
                         HaskellWorks.Data.Simd.Comparison
@@ -762,9 +837,9 @@ test-suite succinct-simd--test
                       , hw-hedgehog
                       , hw-hspec-hedgehog
                       , hw-prim
-                      , hw-rankselect-base
                       , lens
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , succinct-simd
                       , text
                       , vector
@@ -788,9 +863,9 @@ benchmark succinct-simd--bench
                       , directory
                       , hw-bits
                       , hw-prim
-                      , hw-rankselect-base
                       , mmap
                       , succinct-rankselect
+                      , succinct-rankselect-base
                       , succinct-simd
                       , transformers
                       , vector
