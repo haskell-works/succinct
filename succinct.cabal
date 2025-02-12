@@ -65,7 +65,6 @@ common hw-hedgehog                    { build-depends: hw-hedgehog              
 common hw-hspec-hedgehog              { build-depends: hw-hspec-hedgehog              >= 0.1.0.4    && < 0.2    }
 common hw-int                         { build-depends: hw-int                         >= 0.0.2      && < 0.0.3  }
 common hw-mquery                      { build-depends: hw-mquery                      >= 0.2.0.0    && < 0.3    }
-common hw-parser                      { build-depends: hw-parser                      >= 0.1        && < 0.2    }
 common hw-prim                        { build-depends: hw-prim                        >= 0.6.2.32   && < 0.7    }
 common lens                           { build-depends: lens                           >= 4          && < 6      }
 common mmap                           { build-depends: mmap                           >= 0.5        && < 0.6    }
@@ -97,6 +96,7 @@ common succinct-json                  { build-depends: succinct:succinct-json   
 common succinct-json-simd             { build-depends: succinct:succinct-json-simd                              }
 common succinct-json-simple-cursor    { build-depends: succinct:succinct-json-simple-cursor                     }
 common succinct-json-standard-cursor  { build-depends: succinct:succinct-json-standard-cursor                   }
+common succinct-parser                { build-depends: succinct:succinct-parser                                 }
 common succinct-rankselect            { build-depends: succinct:succinct-rankselect                             }
 common succinct-rankselect-base       { build-depends: succinct:succinct-rankselect-base                        }
 common succinct-simd                  { build-depends: succinct:succinct-simd                                   }
@@ -374,7 +374,6 @@ library succinct-json
                       , bytestring
                       , dlist
                       , hw-mquery
-                      , hw-parser
                       , hw-prim
                       , mmap
                       , prettyprinter
@@ -383,6 +382,7 @@ library succinct-json
                       , succinct-bits
                       , succinct-json-simple-cursor
                       , succinct-json-standard-cursor
+                      , succinct-parser
                       , succinct-rankselect
                       , succinct-rankselect-base
                       , succinct-simd
@@ -760,6 +760,41 @@ test-suite succinct-json-standard-cursor--doctest
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   main-is:              DoctestDriver.hs
   HS-Source-Dirs:       components/succinct-json-standard-cursor--doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-parser
+  import:               base, config
+                      , attoparsec
+                      , bytestring
+                      , hw-prim
+                      , text
+  hs-source-dirs:       components/succinct-parser
+  exposed-modules:      HaskellWorks.Data.Parser
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+
+test-suite succinct-parser--test
+  import:               base, config
+                      , hedgehog
+                      , hspec
+                      , hw-hspec-hedgehog
+                      , succinct-parser
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-parser--test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+
+test-suite succinct-parser--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-parser
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-parser--doctest
   build-tool-depends:   doctest-discover:doctest-discover
 
 library succinct-rankselect
