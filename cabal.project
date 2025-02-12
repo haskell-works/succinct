@@ -14,6 +14,5 @@ package succinct-rankselect-base
 package succinct-simd
   flags: +bmi2
 
-package hw-json-simd
-
+package succinct-json-simd
   flags: +avx2
