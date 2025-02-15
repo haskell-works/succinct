@@ -64,7 +64,6 @@ common hw-fingertree                  { build-depends: hw-fingertree            
 common hw-hedgehog                    { build-depends: hw-hedgehog                    >= 0.1.0.1    && < 0.2    }
 common hw-hspec-hedgehog              { build-depends: hw-hspec-hedgehog              >= 0.1.0.4    && < 0.2    }
 common hw-int                         { build-depends: hw-int                         >= 0.0.2      && < 0.0.3  }
-common hw-mquery                      { build-depends: hw-mquery                      >= 0.2.0.0    && < 0.3    }
 common hw-prim                        { build-depends: hw-prim                        >= 0.6.2.32   && < 0.7    }
 common lens                           { build-depends: lens                           >= 4          && < 6      }
 common mmap                           { build-depends: mmap                           >= 0.5        && < 0.6    }
@@ -96,6 +95,7 @@ common succinct-json                  { build-depends: succinct:succinct-json   
 common succinct-json-simd             { build-depends: succinct:succinct-json-simd                              }
 common succinct-json-simple-cursor    { build-depends: succinct:succinct-json-simple-cursor                     }
 common succinct-json-standard-cursor  { build-depends: succinct:succinct-json-standard-cursor                   }
+common succinct-mquery                { build-depends: succinct:succinct-mquery                                 }
 common succinct-parser                { build-depends: succinct:succinct-parser                                 }
 common succinct-rankselect            { build-depends: succinct:succinct-rankselect                             }
 common succinct-rankselect-base       { build-depends: succinct:succinct-rankselect-base                        }
@@ -373,7 +373,6 @@ library succinct-json
                       , bits-extra
                       , bytestring
                       , dlist
-                      , hw-mquery
                       , hw-prim
                       , mmap
                       , prettyprinter
@@ -382,6 +381,7 @@ library succinct-json
                       , succinct-bits
                       , succinct-json-simple-cursor
                       , succinct-json-standard-cursor
+                      , succinct-mquery
                       , succinct-parser
                       , succinct-rankselect
                       , succinct-rankselect-base
@@ -419,7 +419,6 @@ executable succinct-json-app
                       , bytestring
                       , dlist
                       , generic-lens
-                      , hw-mquery
                       , hw-prim
                       , lens
                       , mmap
@@ -429,6 +428,7 @@ executable succinct-json-app
                       , succinct-json-simd
                       , succinct-json-simple-cursor
                       , succinct-json-standard-cursor
+                      , succinct-mquery
                       , succinct-rankselect
                       , succinct-rankselect-base
                       , text
@@ -454,7 +454,6 @@ test-suite succinct-json--test
                       , hedgehog
                       , hspec
                       , hw-hspec-hedgehog
-                      , hw-mquery
                       , hw-prim
                       , scientific
                       , succinct-balancedparens
@@ -462,6 +461,7 @@ test-suite succinct-json--test
                       , succinct-json
                       , succinct-json-simple-cursor
                       , succinct-json-standard-cursor
+                      , succinct-mquery
                       , succinct-rankselect
                       , succinct-rankselect-base
                       , text
@@ -509,10 +509,10 @@ library succinct-json-examples
                       , aeson
                       , bytestring
                       , dlist
-                      , hw-mquery
                       , hw-prim
                       , succinct-json
                       , succinct-json-standard-cursor
+                      , succinct-mquery
   visibility:           public
   hs-source-dirs:       components/succinct-json-examples
   other-modules:        Example1
@@ -760,6 +760,61 @@ test-suite succinct-json-standard-cursor--doctest
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   main-is:              DoctestDriver.hs
   HS-Source-Dirs:       components/succinct-json-standard-cursor--doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-mquery
+  import:               base, config
+                      , prettyprinter
+                      , dlist
+                      , lens
+  visibility:           public
+  hs-source-dirs:       components/succinct-mquery
+  exposed-modules:      HaskellWorks.Data.MQuery
+                        HaskellWorks.Data.MQuery.AtLeastSize
+                        HaskellWorks.Data.MQuery.Entry
+                        HaskellWorks.Data.MQuery.Micro
+                        HaskellWorks.Data.MQuery.Mini
+                        HaskellWorks.Data.MQuery.Row
+                        HaskellWorks.Data.MQuery.Shows
+                        HaskellWorks.Data.MQuery.ToBool
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+
+executable succinct-mquery--example
+  import:               base, config
+                      , succinct-mquery
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-mquery--app
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+
+test-suite succinct-mquery--test
+  import:               base, config
+                      , dlist
+                      , hedgehog
+                      , hspec
+                      , hw-hspec-hedgehog
+                      , lens
+                      , succinct-mquery
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-mquery--test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  other-modules:        HaskellWorks.Data.Model.Example
+                        HaskellWorks.Data.Model.Lens
+                        HaskellWorks.Data.Model.Type
+                        HaskellWorks.Data.MQuerySpec
+
+test-suite succinct-mquery--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-mquery
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-mquery--doctest
   build-tool-depends:   doctest-discover:doctest-discover
 
 library succinct-parser
