@@ -59,7 +59,6 @@ common filepath                       { build-depends: filepath                 
 common generic-lens                   { build-depends: generic-lens                   >= 1.2.0.1    && < 2.3    }
 common hedgehog                       { build-depends: hedgehog                       >= 0.6        && < 1.5    }
 common hspec                          { build-depends: hspec                          >= 2.4        && < 3      }
-common hw-excess                      { build-depends: hw-excess                      >= 0.2.2.0    && < 0.3    }
 common hw-fingertree                  { build-depends: hw-fingertree                  >= 0.1.1.0    && < 0.2    }
 common hw-hedgehog                    { build-depends: hw-hedgehog                    >= 0.1.0.1    && < 0.2    }
 common hw-hspec-hedgehog              { build-depends: hw-hspec-hedgehog              >= 0.1.0.4    && < 0.2    }
@@ -72,6 +71,7 @@ common optparse-applicative           { build-depends: optparse-applicative     
 common prettyprinter                  { build-depends: prettyprinter                  >= 1          && < 2      }
 common QuickCheck                     { build-depends: QuickCheck                     >= 2.10       && < 2.15   }
 common resourcet                      { build-depends: resourcet                      >= 1.1        && < 1.4    }
+common safe                           { build-depends: safe                           >= 0.2        && < 0.4    }
 common scientific                     { build-depends: scientific                     >= 0.3.6.2    && < 0.4    }
 common text                           { build-depends: text                           >= 1.2        && < 3      }
 common transformers                   { build-depends: transformers                   >= 0.4        && < 0.7    }
@@ -91,6 +91,7 @@ common config
 common succinct-balancedparens        { build-depends: succinct:succinct-balancedparens                         }
 common succinct-balancedparens-gen    { build-depends: succinct:succinct-balancedparens-gen                     }
 common succinct-bits                  { build-depends: succinct:succinct-bits                                   }
+common succinct-excess                { build-depends: succinct:succinct-excess                                 }
 common succinct-json                  { build-depends: succinct:succinct-json                                   }
 common succinct-json-simd             { build-depends: succinct:succinct-json-simd                              }
 common succinct-json-simple-cursor    { build-depends: succinct:succinct-json-simple-cursor                     }
@@ -105,11 +106,11 @@ common succinct-string-parse          { build-depends: succinct:succinct-string-
 library succinct-balancedparens
   import:               base, config
                       , deepseq
-                      , hw-excess
                       , hw-fingertree
                       , hw-int
                       , hw-prim
                       , succinct-bits
+                      , succinct-excess
                       , succinct-rankselect-base
                       , vector
   visibility:           public
@@ -519,6 +520,83 @@ library succinct-json-examples
                         Example2
                         Example3
                         Example4
+
+library succinct-excess
+  import:               base, config
+                      , hw-prim
+                      , safe
+                      , succinct-bits
+                      , succinct-rankselect-base
+                      , vector
+  visibility:           public
+  exposed-modules:      HaskellWorks.Data.Excess
+                        HaskellWorks.Data.Excess.Excess0
+                        HaskellWorks.Data.Excess.Excess1
+                        HaskellWorks.Data.Excess.Internal.Branchless
+                        HaskellWorks.Data.Excess.Internal.Partial.Table
+                        HaskellWorks.Data.Excess.Internal.Table
+                        HaskellWorks.Data.Excess.Internal.Triplet8
+                        HaskellWorks.Data.Excess.MinExcess
+                        HaskellWorks.Data.Excess.MinExcess0
+                        HaskellWorks.Data.Excess.MinExcess1
+                        HaskellWorks.Data.Excess.MinMaxExcess0
+                        HaskellWorks.Data.Excess.MinMaxExcess1
+                        HaskellWorks.Data.Excess.PartialMinExcess0
+                        HaskellWorks.Data.Excess.PartialMinExcess1
+                        HaskellWorks.Data.Excess.PartialMinMaxExcess0
+                        HaskellWorks.Data.Excess.PartialMinMaxExcess1
+                        HaskellWorks.Data.Excess.Triplet
+  autogen-modules:      Paths_succinct
+  other-modules:        Paths_succinct
+  hs-source-dirs:       components/succinct-excess
+
+test-suite succinct-excess--test
+  import:               base, config
+                      , QuickCheck
+                      , hedgehog
+                      , hspec
+                      , hw-prim
+                      , hw-hspec-hedgehog
+                      , succinct-bits
+                      , succinct-excess
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-excess--test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  other-modules:        HaskellWorks.Data.Excess.Internal.BranchlessSpec
+                        HaskellWorks.Data.Excess.MinExcess0Spec
+                        HaskellWorks.Data.Excess.MinExcess1Spec
+                        HaskellWorks.Data.Excess.MinMaxExcess0Spec
+                        HaskellWorks.Data.Excess.MinMaxExcess1Spec
+                        HaskellWorks.Data.Excess.PartialMinExcess0Spec
+                        HaskellWorks.Data.Excess.PartialMinExcess1Spec
+                        HaskellWorks.Data.Excess.PartialMinMaxExcess0Spec
+                        HaskellWorks.Data.Excess.PartialMinMaxExcess1Spec
+
+benchmark succinct-excess--bench
+  import:               base, config
+                      , bytestring
+                      , criterion
+                      , hw-prim
+                      , succinct-excess
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-excess--bench
+
+test-suite succinct-excess--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-excess
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-excess--doctest
+  build-tool-depends:   doctest-discover:doctest-discover
 
 library succinct-json-simd
   import:               base, config
