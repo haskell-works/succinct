@@ -62,7 +62,6 @@ common hspec                          { build-depends: hspec                    
 common hw-fingertree                  { build-depends: hw-fingertree                  >= 0.1.1.0    && < 0.2    }
 common hw-hedgehog                    { build-depends: hw-hedgehog                    >= 0.1.0.1    && < 0.2    }
 common hw-hspec-hedgehog              { build-depends: hw-hspec-hedgehog              >= 0.1.0.4    && < 0.2    }
-common hw-int                         { build-depends: hw-int                         >= 0.0.2      && < 0.0.3  }
 common hw-prim                        { build-depends: hw-prim                        >= 0.6.2.32   && < 0.7    }
 common lens                           { build-depends: lens                           >= 4          && < 6      }
 common mmap                           { build-depends: mmap                           >= 0.5        && < 0.6    }
@@ -92,6 +91,7 @@ common succinct-balancedparens        { build-depends: succinct:succinct-balance
 common succinct-balancedparens-gen    { build-depends: succinct:succinct-balancedparens-gen                     }
 common succinct-bits                  { build-depends: succinct:succinct-bits                                   }
 common succinct-excess                { build-depends: succinct:succinct-excess                                 }
+common succinct-int                   { build-depends: succinct:succinct-int                                    }
 common succinct-json                  { build-depends: succinct:succinct-json                                   }
 common succinct-json-simd             { build-depends: succinct:succinct-json-simd                              }
 common succinct-json-simple-cursor    { build-depends: succinct:succinct-json-simple-cursor                     }
@@ -107,10 +107,10 @@ library succinct-balancedparens
   import:               base, config
                       , deepseq
                       , hw-fingertree
-                      , hw-int
                       , hw-prim
                       , succinct-bits
                       , succinct-excess
+                      , succinct-int
                       , succinct-rankselect-base
                       , vector
   visibility:           public
@@ -214,11 +214,11 @@ test-suite succinct-balancedparens--test
                       , hedgehog
                       , hspec
                       , hw-hspec-hedgehog
-                      , hw-int
                       , hw-prim
                       , succinct-balancedparens
                       , succinct-balancedparens-gen
                       , succinct-bits
+                      , succinct-int
                       , succinct-rankselect-base
                       , transformers
                       , vector
@@ -282,8 +282,8 @@ library succinct-bits
                       , bitvec
                       , bytestring
                       , deepseq
-                      , hw-int
                       , hw-prim
+                      , succinct-int
                       , succinct-string-parse
                       , vector
   exposed-modules:      HaskellWorks.Data.Bits
@@ -364,6 +364,51 @@ test-suite succinct-bits--doctest
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   main-is:              DoctestDriver.hs
   HS-Source-Dirs:       components/succinct-bits--doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-int
+  import:               base, config
+  visibility:           public
+  exposed-modules:      HaskellWorks.Data.Int
+                        HaskellWorks.Data.Int.Narrow
+                        HaskellWorks.Data.Int.Narrow.Narrow16
+                        HaskellWorks.Data.Int.Narrow.Narrow32
+                        HaskellWorks.Data.Int.Narrow.Narrow64
+                        HaskellWorks.Data.Int.Narrow.Narrow8
+                        HaskellWorks.Data.Int.Signed
+                        HaskellWorks.Data.Int.Unsigned
+                        HaskellWorks.Data.Int.Widen
+                        HaskellWorks.Data.Int.Widen.Widen16
+                        HaskellWorks.Data.Int.Widen.Widen32
+                        HaskellWorks.Data.Int.Widen.Widen64
+                        HaskellWorks.Data.Int.Widen.Widen8
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  hs-source-dirs:       components/succinct-int
+
+test-suite succinct-int--test
+  import:               base, config
+                      , hedgehog
+                      , hspec
+                      , hw-hedgehog
+                      , hw-hspec-hedgehog
+                      , succinct-int
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-int--test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N -Wall
+  build-tool-depends:   hspec-discover:hspec-discover
+
+test-suite succinct-int--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-int
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-int--doctest
   build-tool-depends:   doctest-discover:doctest-discover
 
 library succinct-json
@@ -1049,9 +1094,9 @@ library succinct-rankselect-base
   import:               base, config
                       , bits-extra
                       , bitvec
-                      , hw-int
                       , hw-prim
                       , succinct-bits
+                      , succinct-int
                       , succinct-string-parse
                       , vector
   visibility:           public
