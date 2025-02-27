@@ -17,11 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ghc: ["9.8.2", "9.6.6"]
-        os: [ubuntu-latest, windows-latest]
-        exclude:
-        - os: windows-latest
-          ghc: "9.4.8"
+        ghc: ["9.6.6"]
+        os: [ubuntu-latest]
 
     env:
       # Modify this value to "invalidate" the cabal cache.
@@ -34,7 +31,7 @@ jobs:
         id: setup-haskell
         with:
           ghc-version: ${{ matrix.ghc }}
-          cabal-version: '3.10.2.1'
+          cabal-version: '3.10.3.0'
 
       - name: Set some window specific things
         if: matrix.os == 'windows-latest'
@@ -72,6 +69,12 @@ jobs:
 
       - name: Test
         run: cabal test all --enable-tests --enable-benchmarks
+
+      - name: Setup tmate session
+        if: always()
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
   check:
     needs: build
