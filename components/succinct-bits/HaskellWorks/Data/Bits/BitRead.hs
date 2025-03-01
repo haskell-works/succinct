@@ -12,12 +12,9 @@ import Data.Word
 import HaskellWorks.Data.Bits.BitParse
 import HaskellWorks.Data.String.Parse
 
-import qualified Data.Bit             as Bit
-import qualified Data.Bit.ThreadSafe  as BitTS
 import qualified Data.ByteString      as BS
 import qualified Data.Vector          as DV
 import qualified Data.Vector.Storable as DVS
-import qualified Data.Vector.Unboxed  as DVU
 
 -- | Bit string reader that produces a value of a type
 class BitRead a where
@@ -87,12 +84,6 @@ instance BitRead (DVS.Vector Word32) where
   bitRead = bitRead'
 
 instance BitRead (DVS.Vector Word64) where
-  bitRead = bitRead'
-
-instance BitRead (DVU.Vector Bit.Bit) where
-  bitRead = bitRead'
-
-instance BitRead (DVU.Vector BitTS.Bit) where
   bitRead = bitRead'
 
 instance BitRead [Bool] where

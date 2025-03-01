@@ -13,13 +13,10 @@ import GHC.Exts
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Bits.Word
 
-import qualified Data.Bit             as Bit
-import qualified Data.Bit.ThreadSafe  as BitTS
 import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as BSL
 import qualified Data.Vector          as DV
 import qualified Data.Vector.Storable as DVS
-import qualified Data.Vector.Unboxed  as DVU
 
 -- | Shower of a value as a bit string
 class BitShow a where
@@ -124,12 +121,6 @@ instance BitShow (DVS.Vector Word32) where
 
 instance BitShow (DVS.Vector Word64) where
   bitShows = bitShows . toList
-
-instance BitShow (DVU.Vector Bit.Bit) where
-  bitShows = bitShows . fmap Bit.unBit . toList
-
-instance BitShow (DVU.Vector BitTS.Bit) where
-  bitShows = bitShows . fmap BitTS.unBit . toList
 
 -- | Show a value as a bit string.  Note that the bit string will be shown
 -- in little-endian which means the least significant bit comes first.  This

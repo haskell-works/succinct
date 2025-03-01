@@ -15,11 +15,8 @@ import HaskellWorks.Data.Naive
 import HaskellWorks.Data.Positioning
 import Prelude                       hiding (length)
 
-import qualified Data.Bit             as Bit
-import qualified Data.Bit.ThreadSafe  as BitTS
 import qualified Data.Vector          as DV
 import qualified Data.Vector.Storable as DVS
-import qualified Data.Vector.Unboxed  as DVU
 
 class BitLength v where
   -- | Number of bits in a value including ones and zeros.
@@ -130,12 +127,4 @@ instance BitLength (DVS.Vector Word32) where
 
 instance BitLength (DVS.Vector Word64) where
   bitLength v = length v * bitLength (v !!! 0)
-  {-# INLINE bitLength #-}
-
-instance BitLength (DVU.Vector Bit.Bit) where
-  bitLength = fromIntegral . DVU.length
-  {-# INLINE bitLength #-}
-
-instance BitLength (DVU.Vector BitTS.Bit) where
-  bitLength = fromIntegral . DVU.length
   {-# INLINE bitLength #-}
