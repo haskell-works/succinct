@@ -15,11 +15,8 @@ import HaskellWorks.Data.Bits.ElemFixedBitSize
 import HaskellWorks.Data.Bits.PopCount.PopCount1
 import HaskellWorks.Data.Positioning
 
-import qualified Data.Bit             as Bit
-import qualified Data.Bit.ThreadSafe  as BitTS
 import qualified Data.Vector          as DV
 import qualified Data.Vector.Storable as DVS
-import qualified Data.Vector.Unboxed  as DVU
 
 {- HLINT ignore "Reduce duplication"  -}
 
@@ -137,11 +134,3 @@ instance Rank1 (DVS.Vector Word64) where
           prefix    = DVS.take (fromIntegral q) v
           maybeElem = v !!! fromIntegral q
   {-# INLINABLE rank1 #-}
-
-instance Rank1 (DVU.Vector Bit.Bit) where
-  rank1 v p = fromIntegral (Bit.countBits (DVU.take (fromIntegral p) v))
-  {-# INLINE rank1 #-}
-
-instance Rank1 (DVU.Vector BitTS.Bit) where
-  rank1 v p = fromIntegral (BitTS.countBits (DVU.take (fromIntegral p) v))
-  {-# INLINE rank1 #-}

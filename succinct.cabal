@@ -44,7 +44,6 @@ common array                          { build-depends: array                    
 common attoparsec                     { build-depends: attoparsec                     >= 0.13       && < 0.15   }
 common attoparsec-aeson               { build-depends: attoparsec-aeson               >= 2          && < 3      }
 common bits-extra                     { build-depends: bits-extra                     >= 0.0.1.3    && < 0.1    }
-common bitvec                         { build-depends: bitvec                         >= 1.0        && < 1.2    }
 common bytestring                     { build-depends: bytestring                     >= 0.10.6     && < 0.13   }
 common cassava                        { build-depends: cassava                        >= 0.5.1.0    && < 0.6    }
 common conduit                        { build-depends: conduit                        >= 1.2        && < 1.4    }
@@ -714,7 +713,6 @@ test-suite succinct-rankselect--doctest
 library succinct-rankselect-base
   import:               base, config
                       , bits-extra
-                      , bitvec
                       , hw-bits
                       , hw-int
                       , hw-prim
@@ -737,7 +735,6 @@ test-suite succinct-rankselect-base--test
   import:               base, config
                       , QuickCheck
                       , bits-extra
-                      , bitvec
                       , hedgehog
                       , hspec
                       , hw-bits
