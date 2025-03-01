@@ -46,6 +46,7 @@ common attoparsec-aeson               { build-depends: attoparsec-aeson         
 common bits-extra                     { build-depends: bits-extra                     >= 0.0.1.3    && < 0.1    }
 common bytestring                     { build-depends: bytestring                     >= 0.10.6     && < 0.13   }
 common cassava                        { build-depends: cassava                        >= 0.5.1.0    && < 0.6    }
+common cereal                         { build-depends: cereal                         >= 0.5.8.1    && < 0.6    }
 common conduit                        { build-depends: conduit                        >= 1.2        && < 1.4    }
 common containers                     { build-depends: containers                     >= 0.5        && < 0.8    }
 common criterion                      { build-depends: criterion                      >= 1.4        && < 1.7    }
@@ -56,6 +57,7 @@ common doctest                        { build-depends: doctest                  
 common doctest-discover               { build-depends: doctest-discover               >= 0.2        && < 0.3    }
 common filepath                       { build-depends: filepath                       >= 1.4        && < 1.6    }
 common generic-lens                   { build-depends: generic-lens                   >= 1.2.0.1    && < 2.3    }
+common ghc-prim                       { build-depends: ghc-prim                       >= 0.5        && < 0.12   }
 common hedgehog                       { build-depends: hedgehog                       >= 0.6        && < 1.5    }
 common hspec                          { build-depends: hspec                          >= 2.4        && < 3      }
 common hw-fingertree                  { build-depends: hw-fingertree                  >= 0.1.1.0    && < 0.2    }
@@ -101,6 +103,7 @@ common succinct-rankselect            { build-depends: succinct:succinct-ranksel
 common succinct-rankselect-base       { build-depends: succinct:succinct-rankselect-base                        }
 common succinct-simd                  { build-depends: succinct:succinct-simd                                   }
 common succinct-string-parse          { build-depends: succinct:succinct-string-parse                           }
+common succinct-xml                   { build-depends: succinct:succinct-xml                                    }
 
 library succinct-balancedparens
   import:               base, config
@@ -1289,3 +1292,164 @@ test-suite succinct-string-parse--doctest
   main-is:              DoctestDriver.hs
   HS-Source-Dirs:       components/succinct-string-parse--doctest
   build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-xml
+  import:             base, config
+                    , array
+                    , attoparsec
+                    , base
+                    , bytestring
+                    , cereal
+                    , containers
+                    , deepseq
+                    , ghc-prim
+                    , hw-prim
+                    , lens
+                    , mmap
+                    , mtl
+                    , prettyprinter
+                    , resourcet
+                    , succinct-balancedparens
+                    , succinct-bits
+                    , succinct-parser
+                    , succinct-rankselect
+                    , succinct-rankselect-base
+                    , text
+                    , transformers
+                    , vector
+                    , word8
+  visibility:         public
+  exposed-modules:    HaskellWorks.Data.Xml
+                      HaskellWorks.Data.Xml.Blank
+                      HaskellWorks.Data.Xml.CharLike
+                      HaskellWorks.Data.Xml.Decode
+                      HaskellWorks.Data.Xml.DecodeError
+                      HaskellWorks.Data.Xml.DecodeResult
+                      HaskellWorks.Data.Xml.Grammar
+                      HaskellWorks.Data.Xml.Index
+                      HaskellWorks.Data.Xml.Internal.BalancedParens
+                      HaskellWorks.Data.Xml.Internal.ByteString
+                      HaskellWorks.Data.Xml.Internal.Blank
+                      HaskellWorks.Data.Xml.Internal.List
+                      HaskellWorks.Data.Xml.Internal.Show
+                      HaskellWorks.Data.Xml.Internal.Tables
+                      HaskellWorks.Data.Xml.Internal.ToIbBp64
+                      HaskellWorks.Data.Xml.Internal.Words
+                      HaskellWorks.Data.Xml.Lens
+                      HaskellWorks.Data.Xml.Succinct
+                      HaskellWorks.Data.Xml.Succinct.Cursor
+                      HaskellWorks.Data.Xml.Succinct.Cursor.BalancedParens
+                      HaskellWorks.Data.Xml.Succinct.Cursor.BlankedXml
+                      HaskellWorks.Data.Xml.Succinct.Cursor.Create
+                      HaskellWorks.Data.Xml.Succinct.Cursor.InterestBits
+                      HaskellWorks.Data.Xml.Succinct.Cursor.Internal
+                      HaskellWorks.Data.Xml.Succinct.Cursor.Load
+                      HaskellWorks.Data.Xml.Succinct.Cursor.Types
+                      HaskellWorks.Data.Xml.Succinct.Cursor.MMap
+                      HaskellWorks.Data.Xml.Succinct.Cursor.Token
+                      HaskellWorks.Data.Xml.Succinct.Index
+                      HaskellWorks.Data.Xml.RawDecode
+                      HaskellWorks.Data.Xml.RawValue
+                      HaskellWorks.Data.Xml.Token.Tokenize
+                      HaskellWorks.Data.Xml.Token.Types
+                      HaskellWorks.Data.Xml.Token
+                      HaskellWorks.Data.Xml.Type
+                      HaskellWorks.Data.Xml.Value
+  other-modules:      Paths_succinct
+  autogen-modules:    Paths_succinct
+  hs-source-dirs:     components/succinct-xml
+  ghc-options:        -Wall -O2 -msse4.2
+
+executable succinct-xml--app
+  import:               base, config
+                      , attoparsec
+                      , bytestring
+                      , deepseq
+                      , generic-lens
+                      , hw-prim
+                      , lens
+                      , mmap
+                      , mtl
+                      , optparse-applicative
+                      , resourcet
+                      , succinct-balancedparens
+                      , succinct-bits
+                      , succinct-rankselect
+                      , succinct-xml
+                      , text
+                      , vector
+  main-is:              Main.hs
+  other-modules:        App.Commands
+                        App.Commands.Count
+                        App.Commands.CreateBlankedXml
+                        App.Commands.CreateBpIndex
+                        App.Commands.CreateIbIndex
+                        App.Commands.CreateIndex
+                        App.Commands.Demo
+                        App.Commands.Types
+                        App.Options
+                        App.XPath.Parser
+                        App.XPath.Types
+                        App.Show
+                        App.Naive
+  hs-source-dirs:       components/succinct-xml--app
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N -O2 -Wall -msse4.2
+
+test-suite succinct-xml--test
+  import:             base, config
+                    , attoparsec
+                    , base
+                    , bytestring
+                    , hedgehog
+                    , hspec
+                    , hw-hspec-hedgehog
+                    , hw-prim
+                    , succinct-balancedparens
+                    , succinct-bits
+                    , succinct-rankselect
+                    , succinct-rankselect-base
+                    , succinct-xml
+                    , text
+                    , vector
+  type:               exitcode-stdio-1.0
+  main-is:            Spec.hs
+  hs-source-dirs:     components/succinct-xml--test
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  default-language:   Haskell2010
+  build-tool-depends: hspec-discover:hspec-discover
+  other-modules:      HaskellWorks.Data.Xml.Internal.BlankSpec
+                      HaskellWorks.Data.Xml.RawValueSpec
+                      HaskellWorks.Data.Xml.Succinct.Cursor.BalancedParensSpec
+                      HaskellWorks.Data.Xml.Succinct.Cursor.BlankedXmlSpec
+                      HaskellWorks.Data.Xml.Succinct.Cursor.InterestBitsSpec
+                      HaskellWorks.Data.Xml.Succinct.CursorSpec.Make
+                      HaskellWorks.Data.Xml.Succinct.CursorSpec
+                      HaskellWorks.Data.Xml.Token.TokenizeSpec
+                      HaskellWorks.Data.Xml.TypeSpec
+
+benchmark succinct-xml--bench
+  import:             base, config
+                    , bytestring
+                    , criterion
+                    , hw-prim
+                    , mmap
+                    , resourcet
+                    , succinct-balancedparens
+                    , succinct-bits
+                    , succinct-xml
+                    , vector
+  type:               exitcode-stdio-1.0
+  main-is:            Main.hs
+  hs-source-dirs:     components/succinct-xml--bench
+  ghc-options:        -O2 -Wall -msse4.2
+
+test-suite succinct-xml--doctest
+  import:             base, config
+                    , doctest
+                    , doctest-discover
+                    , succinct-xml
+  type:               exitcode-stdio-1.0
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  main-is:            DoctestDriver.hs
+  HS-Source-Dirs:     components/succinct-xml--doctest
+  build-tool-depends: doctest-discover:doctest-discover

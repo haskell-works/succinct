@@ -8,6 +8,7 @@ module HaskellWorks.Data.Bits.FromBitTextByteStringSpec (spec) where
 
 import Data.Word
 import HaskellWorks.Data.Bits.FromBitTextByteString
+    ( FromBitTextByteString(fromBitTextByteString) )
 import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec
