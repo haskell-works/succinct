@@ -40,6 +40,7 @@ flag sse42
 common base                           { build-depends: base                           >= 4.11       && < 5      }
 
 common aeson                          { build-depends: aeson                          >= 2.0        && < 2.3    }
+common appar                          { build-depends: appar                          >= 0.1.8      && < 0.2    }
 common array                          { build-depends: array                          >= 0.5        && < 0.6    }
 common attoparsec                     { build-depends: attoparsec                     >= 0.13       && < 0.15   }
 common attoparsec-aeson               { build-depends: attoparsec-aeson               >= 2          && < 3      }
@@ -64,6 +65,7 @@ common hw-bits                        { build-depends: hw-bits                  
 common hw-hedgehog                    { build-depends: hw-hedgehog                    >= 0.1.0.1    && < 0.2    }
 common hw-hspec-hedgehog              { build-depends: hw-hspec-hedgehog              >= 0.1.0.4    && < 0.2    }
 common hw-int                         { build-depends: hw-int                         >= 0.0.2      && < 0.0.3  }
+common hw-ip                          { build-depends: hw-ip                          >= 2.3.4.2    && < 2.5    }
 common hw-prim                        { build-depends: hw-prim                        >= 0.6.2.32   && < 0.7    }
 common lens                           { build-depends: lens                           >= 4          && < 6      }
 common mmap                           { build-depends: mmap                           >= 0.5        && < 0.6    }
@@ -78,6 +80,7 @@ common text                           { build-depends: text                     
 common transformers                   { build-depends: transformers                   >= 0.4        && < 0.7    }
 common unordered-containers           { build-depends: unordered-containers           >= 0.2        && < 0.3    }
 common vector                         { build-depends: vector                         >= 0.12       && < 0.14   }
+common weigh                          { build-depends: weigh                          >= 0.0.6      && < 0.1    }
 common word8                          { build-depends: word8                          >= 0.1        && < 0.2    }
 
 common config
@@ -91,6 +94,7 @@ common config
 
 common succinct-balancedparens        { build-depends: succinct:succinct-balancedparens                         }
 common succinct-balancedparens-gen    { build-depends: succinct:succinct-balancedparens-gen                     }
+common succinct-dsv                   { build-depends: succinct:succinct-dsv                                    }
 common succinct-excess                { build-depends: succinct:succinct-excess                                 }
 common succinct-json                  { build-depends: succinct:succinct-json                                   }
 common succinct-json-simd             { build-depends: succinct:succinct-json-simd                              }

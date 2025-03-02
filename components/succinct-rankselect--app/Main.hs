@@ -20,8 +20,8 @@ import qualified Data.List as L
 
 runPoppy512SelectAll :: IO ()
 runPoppy512SelectAll = do
-  entries <- getDirectoryContents "data"
-  let files = ("data/" ++) <$> (".ib" `L.isSuffixOf`) `filter` entries
+  entries <- getDirectoryContents "components/succinct-dsv--data"
+  let files = ("components/succinct-dsv--data/" ++) <$> (".ib" `L.isSuffixOf`) `filter` entries
   forM_ files $ \file -> do
     putStrLn $ "Loading cspoppy for " <> file
     v :: Poppy512 <- mmapFromForeignRegion file
@@ -32,8 +32,8 @@ runPoppy512SelectAll = do
 
 runCsPoppySelectAll :: IO ()
 runCsPoppySelectAll = do
-  entries <- getDirectoryContents "data"
-  let files = ("data/" ++) <$> (".ib" `L.isSuffixOf`) `filter` entries
+  entries <- getDirectoryContents "components/succinct-dsv--data"
+  let files = ("components/succinct-dsv--data/" ++) <$> (".ib" `L.isSuffixOf`) `filter` entries
   forM_ files $ \file -> do
     putStrLn $ "Loading cspoppy for " <> file
     v :: CsPoppy <- mmapFromForeignRegion file
