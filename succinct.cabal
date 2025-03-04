@@ -1,0 +1,1496 @@
+cabal-version:  3.4
+
+name:                   succinct
+version:                0.0.0.1
+synopsis:               Memory efficient JSON parser
+description:            Memory efficient JSON parser. Please see README.md
+category:               Data
+homepage:               http://github.com/haskell-works/succinct#readme
+bug-reports:            https://github.com/haskell-works/succinct/issues
+author:                 John Ky
+maintainer:             newhoggy@gmail.com
+copyright:              2016-2024 John Ky
+license:                BSD-3-Clause
+license-file:           LICENSE
+tested-with:            GHC == 9.8.2, GHC == 9.6.6
+build-type:             Simple
+extra-source-files:     README.md
+                        corpus/json/5000B.json
+                        corpus/json/5000B.json.bp.idx
+                        corpus/json/5000B.json.ib.idx
+                        corpus/json/issue-0001.json
+                        corpus/json/issue-0001.json.bp.idx
+                        corpus/json/issue-0001.json.ib.idx
+                        corpus/json/issue-0001.md
+
+source-repository head
+  type: git
+  location: https://github.com/haskell-works/succinct
+
+flag bmi2
+  description:  Enable bmi2 instruction set
+  manual:       False
+  default:      False
+
+flag sse42
+  description:  Enable sse4.2 instruction set
+  manual:       False
+  default:      False
+
+common base                           { build-depends: base                           >= 4.11       && < 5      }
+
+common aeson                          { build-depends: aeson                          >= 2.0        && < 2.3    }
+common appar                          { build-depends: appar                          >= 0.1.8      && < 0.2    }
+common array                          { build-depends: array                          >= 0.5        && < 0.6    }
+common attoparsec                     { build-depends: attoparsec                     >= 0.13       && < 0.15   }
+common attoparsec-aeson               { build-depends: attoparsec-aeson               >= 2          && < 3      }
+common bits-extra                     { build-depends: bits-extra                     >= 0.0.1.3    && < 0.1    }
+common bytestring                     { build-depends: bytestring                     >= 0.10.6     && < 0.13   }
+common cassava                        { build-depends: cassava                        >= 0.5.1.0    && < 0.6    }
+common cereal                         { build-depends: cereal                         >= 0.5.8.1    && < 0.6    }
+common conduit                        { build-depends: conduit                        >= 1.2        && < 1.4    }
+common containers                     { build-depends: containers                     >= 0.5        && < 0.8    }
+common criterion                      { build-depends: criterion                      >= 1.4        && < 1.7    }
+common deepseq                        { build-depends: deepseq                        >= 1.4        && < 1.6    }
+common directory                      { build-depends: directory                      >= 1.3        && < 1.4    }
+common dlist                          { build-depends: dlist                          >= 0.8        && < 1.1    }
+common doctest                        { build-depends: doctest                        >= 0.16.2     && < 0.23   }
+common doctest-discover               { build-depends: doctest-discover               >= 0.2        && < 0.3    }
+common filepath                       { build-depends: filepath                       >= 1.4        && < 1.6    }
+common generic-lens                   { build-depends: generic-lens                   >= 1.2.0.1    && < 2.3    }
+common ghc-prim                       { build-depends: ghc-prim                       >= 0.5        && < 0.12   }
+common hedgehog                       { build-depends: hedgehog                       >= 0.6        && < 1.5    }
+common hspec                          { build-depends: hspec                          >= 2.4        && < 3      }
+common hw-bits                        { build-depends: hw-bits                        >= 0.7.0.5    && < 0.8    }
+common hw-hedgehog                    { build-depends: hw-hedgehog                    >= 0.1.0.1    && < 0.2    }
+common hw-hspec-hedgehog              { build-depends: hw-hspec-hedgehog              >= 0.1.0.4    && < 0.2    }
+common hw-int                         { build-depends: hw-int                         >= 0.0.2      && < 0.0.3  }
+common hw-ip                          { build-depends: hw-ip                          >= 2.3.4.2    && < 2.5    }
+common hw-prim                        { build-depends: hw-prim                        >= 0.6.2.32   && < 0.7    }
+common lens                           { build-depends: lens                           >= 4          && < 6      }
+common mmap                           { build-depends: mmap                           >= 0.5        && < 0.6    }
+common mtl                            { build-depends: mtl                            >= 2.2        && < 3      }
+common optparse-applicative           { build-depends: optparse-applicative           >= 0.14       && < 0.19   }
+common prettyprinter                  { build-depends: prettyprinter                  >= 1          && < 2      }
+common QuickCheck                     { build-depends: QuickCheck                     >= 2.10       && < 2.15   }
+common resourcet                      { build-depends: resourcet                      >= 1.1        && < 1.4    }
+common safe                           { build-depends: safe                           >= 0.2        && < 0.4    }
+common scientific                     { build-depends: scientific                     >= 0.3.6.2    && < 0.4    }
+common text                           { build-depends: text                           >= 1.2        && < 3      }
+common transformers                   { build-depends: transformers                   >= 0.4        && < 0.7    }
+common unordered-containers           { build-depends: unordered-containers           >= 0.2        && < 0.3    }
+common vector                         { build-depends: vector                         >= 0.12       && < 0.14   }
+common weigh                          { build-depends: weigh                          >= 0.0.6      && < 0.1    }
+common word8                          { build-depends: word8                          >= 0.1        && < 0.2    }
+
+common succinct-balancedparens        { build-depends: succinct:succinct-balancedparens                         }
+common succinct-balancedparens-gen    { build-depends: succinct:succinct-balancedparens-gen                     }
+common succinct-dsv                   { build-depends: succinct:succinct-dsv                                    }
+common succinct-excess                { build-depends: succinct:succinct-excess                                 }
+common succinct-json                  { build-depends: succinct:succinct-json                                   }
+common succinct-json-simd             { build-depends: succinct:succinct-json-simd                              }
+common succinct-json-simple-cursor    { build-depends: succinct:succinct-json-simple-cursor                     }
+common succinct-json-standard-cursor  { build-depends: succinct:succinct-json-standard-cursor                   }
+common succinct-mquery                { build-depends: succinct:succinct-mquery                                 }
+common succinct-parser                { build-depends: succinct:succinct-parser                                 }
+common succinct-rankselect            { build-depends: succinct:succinct-rankselect                             }
+common succinct-rankselect-base       { build-depends: succinct:succinct-rankselect-base                        }
+common succinct-simd                  { build-depends: succinct:succinct-simd                                   }
+common succinct-string-parse          { build-depends: succinct:succinct-string-parse                           }
+common succinct-xml                   { build-depends: succinct:succinct-xml                                    }
+
+common config
+  default-language:     Haskell2010
+  default-extensions:   BinaryLiterals
+                        DataKinds
+                        DeriveFunctor
+                        DeriveGeneric
+                        DeriveTraversable
+                        DuplicateRecordFields
+                        ExplicitForAll
+                        FlexibleContexts
+                        FlexibleInstances
+                        FunctionalDependencies
+                        GADTs
+                        ImportQualifiedPost
+                        InstanceSigs
+                        MultiParamTypeClasses
+                        MultiWayIf
+                        RankNTypes
+                        ScopedTypeVariables
+                        StandaloneDeriving
+                        TupleSections
+                        TypeApplications
+                        TypeFamilies
+                        TypeSynonymInstances
+  ghc-options:          -Wall -O2 -msse4.2
+  if flag(sse42)
+    ghc-options:        -msse4.2
+  if flag(bmi2) && impl(ghc >= 8.4.1)
+    ghc-options:        -mbmi2 -msse4.2
+    cpp-options:        -DBMI2_ENABLED
+
+library succinct-balancedparens
+  import:               base, config
+                      , deepseq
+                      , hw-bits
+                      , hw-int
+                      , hw-prim
+                      , succinct-excess
+                      , succinct-rankselect-base
+                      , vector
+  visibility:           public
+  exposed-modules:      Data.Succinct.BalancedParens
+                        Data.Succinct.BalancedParens.BalancedParens
+                        Data.Succinct.BalancedParens.CloseAt
+                        Data.Succinct.BalancedParens.Enclose
+                        Data.Succinct.BalancedParens.FindClose
+                        Data.Succinct.BalancedParens.FindCloseN
+                        Data.Succinct.BalancedParens.FindOpen
+                        Data.Succinct.BalancedParens.FindOpenN
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Vector16
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Vector32
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Vector64
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Vector8
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Word16
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Word32
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Word64
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Word8
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Vector16
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Vector32
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Vector64
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Vector8
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Word16
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Word32
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Word64
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Word8
+                        Data.Succinct.BalancedParens.Internal.Broadword.Word64
+                        Data.Succinct.BalancedParens.Internal.List
+                        Data.Succinct.BalancedParens.Internal.Show
+                        Data.Succinct.BalancedParens.Internal.Slow.FindCloseC.Generic
+                        Data.Succinct.BalancedParens.Internal.Slow.FindCloseN.Generic
+                        Data.Succinct.BalancedParens.Internal.Slow.FindUnmatchedCloseFar.Vector16
+                        Data.Succinct.BalancedParens.Internal.Slow.FindUnmatchedCloseFar.Vector32
+                        Data.Succinct.BalancedParens.Internal.Slow.FindUnmatchedCloseFar.Vector64
+                        Data.Succinct.BalancedParens.Internal.Slow.FindUnmatchedCloseFar.Vector8
+                        Data.Succinct.BalancedParens.Internal.Slow.FindUnmatchedCloseFar.Word16
+                        Data.Succinct.BalancedParens.Internal.Slow.FindUnmatchedCloseFar.Word32
+                        Data.Succinct.BalancedParens.Internal.Slow.FindUnmatchedCloseFar.Word64
+                        Data.Succinct.BalancedParens.Internal.Slow.FindUnmatchedCloseFar.Word8
+                        Data.Succinct.BalancedParens.Internal.Trace
+                        Data.Succinct.BalancedParens.Internal.Vector.Storable
+                        Data.Succinct.BalancedParens.Internal.Word
+                        Data.Succinct.BalancedParens.Internal.Word16
+                        Data.Succinct.BalancedParens.Internal.Word32
+                        Data.Succinct.BalancedParens.Internal.Word64
+                        Data.Succinct.BalancedParens.Internal.Word8
+                        Data.Succinct.BalancedParens.NewCloseAt
+                        Data.Succinct.BalancedParens.NewOpenAt
+                        Data.Succinct.BalancedParens.OpenAt
+                        Data.Succinct.BalancedParens.RangeMin
+                        Data.Succinct.BalancedParens.RangeMin2
+                        Data.Succinct.BalancedParens.Simple
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  hs-source-dirs:       components/succinct-balancedparens/src
+
+executable succinct-balancedparens--app
+  import:               base, config
+                      , bytestring
+                      , generic-lens
+                      , hw-bits
+                      , hw-prim
+                      , lens
+                      , mmap
+                      , optparse-applicative
+                      , succinct-balancedparens
+                      , vector
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-balancedparens/app
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  other-modules:        App.Commands
+                        App.Commands.BitsToParens
+                        App.Commands.Options.Type
+                        App.Commands.ParensToBits
+                        App.Commands.Positions
+                        App.IO
+                        Paths_succinct
+
+test-suite succinct-balancedparens--test
+  import:               base, config
+                      , directory
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hspec-hedgehog
+                      , hw-int
+                      , hw-prim
+                      , succinct-balancedparens
+                      , succinct-balancedparens-gen
+                      , succinct-rankselect-base
+                      , transformers
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  other-modules:        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Vector8Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Vector16Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Vector32Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Vector64Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Vector8Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Vector16Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Vector32Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindClose.Vector64Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Word16Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Word32Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Word64Spec
+                        Data.Succinct.BalancedParens.Internal.Broadword.FindUnmatchedCloseFar.Word8Spec
+                        Data.Succinct.BalancedParens.Internal.BroadwordSpec
+                        Data.Succinct.BalancedParens.FindCloseNSpec
+                        Data.Succinct.BalancedParens.RangeMin2Spec
+                        Data.Succinct.BalancedParens.RangeMinSpec
+                        Data.Succinct.BalancedParens.SimpleSpec
+  hs-source-dirs:       components/succinct-balancedparens/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+
+benchmark succinct-balancedparens--bench
+  import:               base, config
+                      , criterion
+                      , deepseq
+                      , directory
+                      , generic-lens
+                      , hedgehog
+                      , hw-bits
+                      , hw-prim
+                      , lens
+                      , succinct-balancedparens
+                      , succinct-balancedparens-gen
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-balancedparens/bench
+
+test-suite succinct-balancedparens--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , hw-bits
+                      , hw-prim
+                      , succinct-balancedparens
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-balancedparens/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-balancedparens-gen
+  import:               base, config
+                      , deepseq
+                      , directory
+                      , hedgehog
+                      , hspec
+                      , hw-prim
+                      , succinct-balancedparens
+                      , vector
+  visibility:           public
+  exposed-modules:      Data.Succinct.BalancedParens.Gen
+                        Data.Succinct.BalancedParens.Internal.IO
+  hs-source-dirs:       components/succinct-balancedparens-gen/src
+
+library succinct-dsv
+  import:               base, config
+                      , bits-extra
+                      , bytestring
+                      , deepseq
+                      , ghc-prim
+                      , hw-bits
+                      , hw-prim
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , succinct-simd
+                      , transformers
+                      , vector
+  exposed-modules:
+                        Data.Succinct.Dsv.Internal.Bits
+                        Data.Succinct.Dsv.Internal.Broadword
+                        Data.Succinct.Dsv.Internal.Char
+                        Data.Succinct.Dsv.Internal.Char.Word64
+                        Data.Succinct.Dsv.Internal.Vector
+                        Data.Succinct.Dsv.Lazy.Cursor
+                        Data.Succinct.Dsv.Lazy.Cursor.Internal
+                        Data.Succinct.Dsv.Lazy.Cursor.Lazy
+                        Data.Succinct.Dsv.Lazy.Cursor.Strict
+                        Data.Succinct.Dsv.Lazy.Cursor.Type
+                        Data.Succinct.Dsv.Strict.Cursor
+                        Data.Succinct.Dsv.Strict.Cursor.Internal
+                        Data.Succinct.Dsv.Strict.Cursor.Internal.Reference
+                        Data.Succinct.Dsv.Strict.Cursor.Type
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  hs-source-dirs:       components/succinct-dsv/src
+
+executable succinct-dsv--app
+  import:               base, config
+                      , appar
+                      , bits-extra
+                      , bytestring
+                      , deepseq
+                      , generic-lens
+                      , ghc-prim
+                      , hedgehog
+                      , hw-bits
+                      , hw-ip
+                      , hw-prim
+                      , lens
+                      , optparse-applicative
+                      , resourcet
+                      , succinct-dsv
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , succinct-simd
+                      , text
+                      , transformers
+                      , vector
+  main-is:              Main.hs
+  other-modules:        App.Char
+                        App.Commands
+                        App.Commands.CreateIndex
+                        App.Commands.Generate
+                        App.Commands.IndexWord8s
+                        App.Commands.Options.Parse
+                        App.Commands.Options.Type
+                        App.Commands.QueryLazy
+                        App.Commands.QueryStrict
+                        App.Commands.RangeJoin
+                        App.Data.ColumnDesc
+                        App.Data.RangeJoinColumn
+                        App.Data.List
+                        App.Gen
+                        App.IO
+  hs-source-dirs:       components/succinct-dsv/app
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+
+test-suite succinct-dsv-space
+  import:               base, config
+                      , bits-extra
+                      , bytestring
+                      , cassava
+                      , deepseq
+                      , ghc-prim
+                      , hw-bits
+                      , hw-prim
+                      , succinct-dsv
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , succinct-simd
+                      , vector
+                      , weigh
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              Space.hs
+  hs-source-dirs:       components/succinct-dsv/weigh
+  build-tool-depends:   hspec-discover:hspec-discover
+
+test-suite succinct-dsv-test
+  import:               base, config
+                      , bits-extra
+                      , bytestring
+                      , deepseq
+                      , directory
+                      , ghc-prim
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , succinct-dsv
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , succinct-simd
+                      , text
+                      , vector
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  other-modules:        Data.Succinct.Dsv.BroadwordSpec
+                        Data.Succinct.Dsv.Gen
+                        Data.Succinct.Dsv.Lazy.CursorSpec
+                        Data.Succinct.Dsv.Strict.Cursor.InternalSpec
+                        Data.Succinct.DsvSpec
+  hs-source-dirs:       components/succinct-dsv/test
+  build-tool-depends:   hspec-discover:hspec-discover
+
+benchmark bench
+  import:               base, config
+                      , bits-extra
+                      , bytestring
+                      , cassava
+                      , criterion
+                      , deepseq
+                      , directory
+                      , ghc-prim
+                      , hw-bits
+                      , hw-prim
+                      , mmap
+                      , succinct-dsv
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , succinct-simd
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-dsv/bench
+  ghc-options:          -msse4.2
+
+test-suite doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-dsv
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-dsv/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-json
+  import:               base, config
+                      , aeson
+                      , attoparsec
+                      , attoparsec-aeson
+                      , bits-extra
+                      , bytestring
+                      , dlist
+                      , hw-bits
+                      , hw-prim
+                      , mmap
+                      , prettyprinter
+                      , scientific
+                      , succinct-balancedparens
+                      , succinct-json-simple-cursor
+                      , succinct-json-standard-cursor
+                      , succinct-mquery
+                      , succinct-parser
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , succinct-simd
+                      , text
+                      , vector
+                      , word8
+  visibility:           public
+  hs-source-dirs:       components/succinct-json/src
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  exposed-modules:      Data.Succinct.Json.DecodeError
+                        Data.Succinct.Json.FromValue
+                        Data.Succinct.Json.Internal.CharLike
+                        Data.Succinct.Json.Internal.Doc
+                        Data.Succinct.Json.Internal.Index
+                        Data.Succinct.Json.Internal.PartialIndex
+                        Data.Succinct.Json.Internal.Slurp
+                        Data.Succinct.Json.Internal.Standard.Cursor.Token
+                        Data.Succinct.Json.Internal.Standard.Token.Tokenize
+                        Data.Succinct.Json.Internal.Token
+                        Data.Succinct.Json.Internal.Token.Types
+                        Data.Succinct.Json.Internal.Value
+                        Data.Succinct.Json.Internal.Word64
+                        Data.Succinct.Json.LightJson
+                        Data.Succinct.Json.PartialValue
+                        Data.Succinct.Json.Query
+                        Data.Succinct.Json.Simple.Value
+                        Data.Succinct.Json.Standard.Load.Partial
+                        Data.Succinct.Json.Value
+
+executable succinct-json-app
+  import:               base, config
+                      , aeson
+                      , bytestring
+                      , dlist
+                      , generic-lens
+                      , hw-prim
+                      , lens
+                      , mmap
+                      , optparse-applicative
+                      , succinct-balancedparens
+                      , succinct-json
+                      , succinct-json-simd
+                      , succinct-json-simple-cursor
+                      , succinct-json-standard-cursor
+                      , succinct-mquery
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , text
+                      , unordered-containers
+                      , vector
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-json/app
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  other-modules:        App.Commands
+                        App.Commands.CreateIndex
+                        App.Commands.Count
+                        App.Commands.CountAeson
+                        App.Commands.Demo
+                        App.Commands.Types
+
+test-suite succinct-json--test
+  import:               base, config
+                      , aeson
+                      , attoparsec
+                      , attoparsec-aeson
+                      , bytestring
+                      , dlist
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , scientific
+                      , succinct-balancedparens
+                      , succinct-json
+                      , succinct-json-simple-cursor
+                      , succinct-json-standard-cursor
+                      , succinct-mquery
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , text
+                      , transformers
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-json/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  other-modules:        Data.Succinct.Json.LightJsonSpec
+                        Data.Succinct.Json.Simple.CursorSpec
+                        Data.Succinct.Json.Standard.CursorSpec
+                        Data.Succinct.Json.Standard.GenCursorTest
+                        Data.Succinct.Json.Token.TokenizeSpec
+                        Data.Succinct.Json.TypeSpec
+                        Data.Succinct.Json.ValueSpec
+
+benchmark succinct-json--bench
+  import:               base, config
+                      , bytestring
+                      , criterion
+                      , directory
+                      , mmap
+                      , succinct-json
+                      , succinct-json-standard-cursor
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-json/bench
+
+test-suite succinct-json--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-json
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-json/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-json-examples
+  import:               base, config
+                      , aeson
+                      , bytestring
+                      , dlist
+                      , hw-prim
+                      , succinct-json
+                      , succinct-json-standard-cursor
+                      , succinct-mquery
+  visibility:           public
+  hs-source-dirs:       components/succinct-json-examples/src
+  other-modules:        Example1
+                        Example2
+                        Example3
+                        Example4
+
+library succinct-excess
+  import:               base, config
+                      , hw-bits
+                      , hw-prim
+                      , safe
+                      , succinct-rankselect-base
+                      , vector
+  visibility:           public
+  exposed-modules:      Data.Succinct.Excess
+                        Data.Succinct.Excess.Excess0
+                        Data.Succinct.Excess.Excess1
+                        Data.Succinct.Excess.Internal.Branchless
+                        Data.Succinct.Excess.Internal.Partial.Table
+                        Data.Succinct.Excess.Internal.Table
+                        Data.Succinct.Excess.Internal.Triplet8
+                        Data.Succinct.Excess.MinExcess
+                        Data.Succinct.Excess.MinExcess0
+                        Data.Succinct.Excess.MinExcess1
+                        Data.Succinct.Excess.MinMaxExcess0
+                        Data.Succinct.Excess.MinMaxExcess1
+                        Data.Succinct.Excess.PartialMinExcess0
+                        Data.Succinct.Excess.PartialMinExcess1
+                        Data.Succinct.Excess.PartialMinMaxExcess0
+                        Data.Succinct.Excess.PartialMinMaxExcess1
+                        Data.Succinct.Excess.Triplet
+  autogen-modules:      Paths_succinct
+  other-modules:        Paths_succinct
+  hs-source-dirs:       components/succinct-excess/src
+
+test-suite succinct-excess--test
+  import:               base, config
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , QuickCheck
+                      , succinct-excess
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-excess/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  other-modules:        Data.Succinct.Excess.Internal.BranchlessSpec
+                        Data.Succinct.Excess.MinExcess0Spec
+                        Data.Succinct.Excess.MinExcess1Spec
+                        Data.Succinct.Excess.MinMaxExcess0Spec
+                        Data.Succinct.Excess.MinMaxExcess1Spec
+                        Data.Succinct.Excess.PartialMinExcess0Spec
+                        Data.Succinct.Excess.PartialMinExcess1Spec
+                        Data.Succinct.Excess.PartialMinMaxExcess0Spec
+                        Data.Succinct.Excess.PartialMinMaxExcess1Spec
+
+benchmark succinct-excess--bench
+  import:               base, config
+                      , bytestring
+                      , criterion
+                      , hw-prim
+                      , succinct-excess
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-excess/bench
+
+test-suite succinct-excess--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-excess
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-excess/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-json-simd
+  import:               base, config
+                      , bytestring
+                      , hw-prim
+                      , lens
+                      , vector
+  autogen-modules:      Paths_succinct
+  other-modules:        Paths_succinct
+  hs-source-dirs:       components/succinct-json-simd/src
+  cc-options:           -mssse3 -mlzcnt -mbmi2 -mavx2
+  include-dirs:         components/succinct-json-simd/cbits
+  build-tool-depends:   c2hs:c2hs
+  exposed-modules:      Data.Succinct.Json.Simd.Capabilities
+                        Data.Succinct.Json.Simd.Index.Simple
+                        Data.Succinct.Json.Simd.Index.Standard
+                        Data.Succinct.Json.Simd.Internal.Foreign
+                        Data.Succinct.Json.Simd.Internal.Index.Simple
+                        Data.Succinct.Json.Simd.Internal.Index.Standard
+                        Data.Succinct.Json.Simd.Internal.List
+  c-sources:            components/succinct-json-simd/cbits/debug.c
+                        components/succinct-json-simd/cbits/simd.c
+                        components/succinct-json-simd/cbits/simd-spliced.c
+                        components/succinct-json-simd/cbits/simd-state.c
+                        components/succinct-json-simd/cbits/simd-phi-table-32.c
+                        components/succinct-json-simd/cbits/simd-transition-table-32.c
+
+executable succinct-json-simd--app
+  import:               base, config
+                      , bytestring
+                      , hw-prim
+                      , lens
+                      , optparse-applicative
+                      , succinct-json-simd
+                      , vector
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-json-simd/app
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  other-modules:        App.Commands
+                        App.Commands.Capabilities
+                        App.Commands.CreateIndex
+                        App.Commands.Types
+                        App.Lens
+
+test-suite succinct-json-simd--test
+  import:               base, config
+                      , bytestring
+                      , hw-prim
+                      , lens
+                      , succinct-json-simd
+                      , transformers
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-json-simd/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+
+test-suite succinct-json-simd--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-json-simd
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-json-simd/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-json-simple-cursor
+  import:               base, config
+                      , bytestring
+                      , hw-bits
+                      , hw-prim
+                      , succinct-balancedparens
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , vector
+                      , word8
+  visibility:           public
+  hs-source-dirs:       components/succinct-json-simple-cursor/src
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  exposed-modules:      Data.Succinct.Json.Simple.Cursor
+                        Data.Succinct.Json.Simple.Cursor.Fast
+                        Data.Succinct.Json.Simple.Cursor.Internal.IbBp
+                        Data.Succinct.Json.Simple.Cursor.Internal.ToIbBp
+                        Data.Succinct.Json.Simple.Cursor.Internal.Word8
+                        Data.Succinct.Json.Simple.Cursor.SemiIndex
+                        Data.Succinct.Json.Simple.Cursor.Snippet
+
+executable succinct-json-simple-cursor--app
+  import:               base, config
+                      , bytestring
+                      , generic-lens
+                      , hw-prim
+                      , lens
+                      , mmap
+                      , optparse-applicative
+                      , succinct-balancedparens
+                      , succinct-json-simd
+                      , succinct-json-simple-cursor
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , text
+                      , vector
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-json-simple-cursor/app
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  other-modules:        App.Commands
+                        App.Commands.CreateIndex
+                        App.Commands.Types
+
+test-suite succinct-json-simple-cursor--test
+  import:               base, config
+                      , bytestring
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , succinct-balancedparens
+                      , succinct-json-simple-cursor
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-json-simple-cursor/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  other-modules:        Data.Succinct.Json.Simple.CursorSpec
+
+benchmark succinct-json-simple-cursor-bench
+  import:               base, config
+                      , bytestring
+                      , criterion
+                      , directory
+                      , mmap
+                      , succinct-json-simple-cursor
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-json-simple-cursor/bench
+
+test-suite succinct-json-simple-cursor-doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-json-simple-cursor
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-json-simple-cursor/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-json-standard-cursor
+  import:               base, config
+                      , array
+                      , bits-extra
+                      , bytestring
+                      , hw-bits
+                      , hw-prim
+                      , mmap
+                      , succinct-balancedparens
+                      , succinct-json-simd
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , vector
+                      , word8
+  visibility:           public
+  hs-source-dirs:       components/succinct-json-standard-cursor/src
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  exposed-modules:      Data.Succinct.Json.Standard.Cursor
+                        Data.Succinct.Json.Standard.Cursor.Fast
+                        Data.Succinct.Json.Standard.Cursor.Generic
+                        Data.Succinct.Json.Standard.Cursor.IbBp
+                        Data.Succinct.Json.Standard.Cursor.Index
+                        Data.Succinct.Json.Standard.Cursor.Internal.Blank
+                        Data.Succinct.Json.Standard.Cursor.Internal.BlankedJson
+                        Data.Succinct.Json.Standard.Cursor.Internal.MakeIndex
+                        Data.Succinct.Json.Standard.Cursor.Internal.StateMachine
+                        Data.Succinct.Json.Standard.Cursor.Internal.ToBalancedParens64
+                        Data.Succinct.Json.Standard.Cursor.Internal.ToInterestBits64
+                        Data.Succinct.Json.Standard.Cursor.Internal.Word8
+                        Data.Succinct.Json.Standard.Cursor.Load.Cursor
+                        Data.Succinct.Json.Standard.Cursor.Load.Raw
+                        Data.Succinct.Json.Standard.Cursor.SemiIndex
+                        Data.Succinct.Json.Standard.Cursor.Slow
+                        Data.Succinct.Json.Standard.Cursor.Specific
+                        Data.Succinct.Json.Standard.Cursor.Type
+
+test-suite succinct-json-standard-cursor--test
+  import:               base, config
+                      , bytestring
+                      , filepath
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , succinct-balancedparens
+                      , succinct-json-standard-cursor
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-json-standard-cursor/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  other-modules:        Data.Succinct.Json.Standard.CorpusSpec
+                        Data.Succinct.Json.Standard.Cursor.BalancedParensSpec
+                        Data.Succinct.Json.Standard.Cursor.InterestBitsSpec
+                        Data.Succinct.Json.Standard.Cursor.Internal.BlankSpec
+                        Data.Succinct.Json.Standard.Cursor.TypeSpec
+                        Data.Succinct.Json.Standard.CursorSpec
+                        Data.Succinct.Json.Standard.GenCursorTest
+
+benchmark succinct-json-standard-cursor-bench
+  import:               base, config
+                      , bytestring
+                      , criterion
+                      , directory
+                      , mmap
+                      , succinct-json-standard-cursor
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-json-standard-cursor/bench
+
+test-suite succinct-json-standard-cursor--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , bits-extra
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-json-standard-cursor/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-mquery
+  import:               base, config
+                      , prettyprinter
+                      , dlist
+                      , lens
+  visibility:           public
+  hs-source-dirs:       components/succinct-mquery/src
+  exposed-modules:      Data.Succinct.MQuery
+                        Data.Succinct.MQuery.AtLeastSize
+                        Data.Succinct.MQuery.Entry
+                        Data.Succinct.MQuery.Micro
+                        Data.Succinct.MQuery.Mini
+                        Data.Succinct.MQuery.Row
+                        Data.Succinct.MQuery.Shows
+                        Data.Succinct.MQuery.ToBool
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+
+executable succinct-mquery--example
+  import:               base, config
+                      , succinct-mquery
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-mquery/app
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+
+test-suite succinct-mquery--test
+  import:               base, config
+                      , dlist
+                      , hedgehog
+                      , hspec
+                      , hw-hspec-hedgehog
+                      , lens
+                      , succinct-mquery
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-mquery/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  other-modules:        Data.Succinct.Model.Example
+                        Data.Succinct.Model.Lens
+                        Data.Succinct.Model.Type
+                        Data.Succinct.MQuerySpec
+
+test-suite succinct-mquery--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-mquery
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-mquery/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-parser
+  import:               base, config
+                      , attoparsec
+                      , bytestring
+                      , hw-prim
+                      , text
+  hs-source-dirs:       components/succinct-parser/src
+  exposed-modules:      Data.Succinct.Parser
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+
+test-suite succinct-parser--test
+  import:               base, config
+                      , hedgehog
+                      , hspec
+                      , hw-hspec-hedgehog
+                      , succinct-parser
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-parser/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+
+test-suite succinct-parser--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-parser
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-parser/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-rankselect
+  import:               base, config
+                      , deepseq
+                      , hw-bits
+                      , hw-prim
+                      , succinct-balancedparens
+                      , succinct-rankselect-base
+                      , vector
+  visibility:           public
+  exposed-modules:      Data.Succinct.RankSelect.CsPoppy
+                        Data.Succinct.RankSelect.CsPoppy0
+                        Data.Succinct.RankSelect.CsPoppy1
+                        Data.Succinct.RankSelect.CsPoppy.Internal.Alpha0
+                        Data.Succinct.RankSelect.CsPoppy.Internal.Alpha1
+                        Data.Succinct.RankSelect.CsPoppy.Internal.CsInterleaved
+                        Data.Succinct.RankSelect.CsPoppy.Internal.Lookup
+                        Data.Succinct.RankSelect.CsPoppy.Internal.Nice
+                        Data.Succinct.RankSelect.CsPoppy.Internal.Reference
+                        Data.Succinct.RankSelect.CsPoppy.Internal.Vector
+                        Data.Succinct.RankSelect.Internal.List
+                        Data.Succinct.RankSelect.Internal.Word
+                        Data.Succinct.RankSelect.Poppy512
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  hs-source-dirs:       components/succinct-rankselect/src
+
+executable succinct-rankselect--app
+  import:               base, config
+                      , directory
+                      , generic-lens
+                      , hw-bits
+                      , hw-prim
+                      , lens
+                      , mmap
+                      , mtl
+                      , optparse-applicative
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , vector
+  main-is:              Main.hs
+  other-modules:        App.Commands
+                        App.Commands.Build
+                        App.Commands.Options.Type
+                        App.Commands.SelectAll
+                        App.Commands.UnitTest
+                        App.Commands.Validate
+  hs-source-dirs:       components/succinct-rankselect/app
+  default-extensions:   OverloadedStrings TupleSections
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+
+test-suite succinct-rankselect--test
+  import:               base, config
+                      , directory
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hedgehog
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , mmap
+                      , QuickCheck
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , transformers
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  other-modules:        Data.Succinct.RankSelect.BasicGen
+                        Data.Succinct.RankSelect.BinarySearchSpec
+                        Data.Succinct.RankSelect.CsPoppy.InternalSpec
+                        Data.Succinct.RankSelect.CsPoppySpec
+                        Data.Succinct.RankSelect.Gen
+                        Data.Succinct.RankSelect.InternalSpec
+                        Data.Succinct.RankSelect.Poppy512Spec
+                        Data.Succinct.RankSelect.SimpleSpec
+                        Data.Succinct.RankSelect.SpecCommon
+                        Data.Succinct.RankSelect.ValidateSpec
+                        Test.Common
+  hs-source-dirs:       components/succinct-rankselect/test
+  build-tool-depends:   hspec-discover:hspec-discover
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+
+benchmark succinct-rankselect--bench
+  import:               base, config
+                      , bytestring        
+                      , conduit
+                      , criterion
+                      , directory
+                      , hw-bits
+                      , hw-prim
+                      , mmap
+                      , resourcet
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-rankselect/bench
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+
+test-suite succinct-rankselect--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-rankselect
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-rankselect/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-rankselect-base
+  import:               base, config
+                      , bits-extra
+                      , hw-bits
+                      , hw-bits
+                      , hw-int
+                      , hw-prim
+                      , succinct-string-parse
+                      , vector
+  visibility:           public
+  exposed-modules:      Data.Succinct.RankSelect.Base
+                        Data.Succinct.RankSelect.Base.Internal
+                        Data.Succinct.RankSelect.Base.Rank
+                        Data.Succinct.RankSelect.Base.Rank0
+                        Data.Succinct.RankSelect.Base.Rank1
+                        Data.Succinct.RankSelect.Base.Select
+                        Data.Succinct.RankSelect.Base.Select0
+                        Data.Succinct.RankSelect.Base.Select1
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  hs-source-dirs:       components/succinct-rankselect-base/src
+
+test-suite succinct-rankselect-base--test
+  import:               base, config
+                      , QuickCheck
+                      , bits-extra
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hedgehog
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , succinct-rankselect-base
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  other-modules:        Data.Succinct.RankSelect.Base.InternalSpec
+                        Data.Succinct.RankSelect.Base.Rank0Spec
+                        Data.Succinct.RankSelect.Base.Rank1Spec
+                        Data.Succinct.RankSelect.Base.Select0Spec
+                        Data.Succinct.RankSelect.Base.Select1Spec
+  hs-source-dirs:       components/succinct-rankselect-base/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+
+benchmark succinct-rankselect-base--bench
+  import:               base, config
+                      , bits-extra
+                      , criterion
+                      , hw-bits
+                      , hw-prim
+                      , succinct-rankselect-base
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-rankselect-base/bench
+
+test-suite succinct-rankselect-base--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-rankselect-base
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-rankselect-base/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-rankselect-gen
+  import:               base, config
+                      , deepseq
+                      , hedgehog
+                      , hspec
+                      , hw-prim
+                      , succinct-rankselect
+                      , vector
+  visibility:           public
+  exposed-modules:      Data.Succinct.RankSelect.Gen
+  hs-source-dirs:       components/succinct-rankselect-gen/src
+
+library succinct-simd
+  import:               base, config
+                      , bits-extra
+                      , bytestring
+                      , deepseq
+                      , hw-bits
+                      , hw-prim
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , transformers
+                      , vector
+  visibility:           public
+  exposed-modules:      Data.Succinct.Simd.Capabilities
+                        Data.Succinct.Simd.ChunkString
+                        Data.Succinct.Simd.Comparison
+                        Data.Succinct.Simd.Comparison.Avx2
+                        Data.Succinct.Simd.Comparison.Stock
+                        Data.Succinct.Simd.Internal.Bits
+                        Data.Succinct.Simd.Internal.Broadword
+                        Data.Succinct.Simd.Internal.ChunkString
+                        Data.Succinct.Simd.Internal.Foreign
+                        Data.Succinct.Simd.Internal.Marshal
+                        Data.Succinct.Simd.Logical
+                        Data.Succinct.Simd.Logical.Avx2
+                        Data.Succinct.Simd.Logical.Stock
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  hs-source-dirs:       components/succinct-simd/src
+  include-dirs:         components/succinct-simd/cbits
+  c-sources:            components/succinct-simd/cbits/simd_avx2.c
+                        components/succinct-simd/cbits/simd_sse2.c
+  build-tool-depends:   c2hs:c2hs
+
+test-suite succinct-simd--test
+  import:               base, config
+                      , bits-extra
+                      , bytestring
+                      , deepseq
+                      , directory
+                      , hedgehog
+                      , hspec
+                      , hw-bits
+                      , hw-hedgehog
+                      , hw-hspec-hedgehog
+                      , hw-prim
+                      , lens
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , succinct-simd
+                      , text
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  other-modules:        Data.Succinct.Simd.ComparisonSpec
+                        Data.Succinct.Simd.Internal.BroadwordSpec
+                        Data.Succinct.Simd.LogicalSpec
+  hs-source-dirs:       components/succinct-simd/test
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+
+benchmark succinct-simd--bench
+  import:               base, config
+                      , bits-extra
+                      , bytestring
+                      , cassava
+                      , containers
+                      , criterion
+                      , deepseq
+                      , directory
+                      , hw-bits
+                      , hw-prim
+                      , mmap
+                      , succinct-rankselect
+                      , succinct-rankselect-base
+                      , succinct-simd
+                      , transformers
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Main.hs
+  hs-source-dirs:       components/succinct-simd/bench
+
+test-suite succinct-simd--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-simd
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-simd/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-string-parse
+  import:               base, config
+  exposed-modules:      Data.Succinct.String.Parse
+  other-modules:        Paths_succinct
+  autogen-modules:      Paths_succinct
+  hs-source-dirs:       components/succinct-string-parse/src
+  ghc-options:          -Wall -O2 -msse4.2
+
+test-suite succinct-string-parse--test
+  import:               base, config
+                      , QuickCheck
+                      , bytestring
+                      , hspec
+                      , vector
+  type:                 exitcode-stdio-1.0
+  main-is:              Spec.hs
+  hs-source-dirs:       components/succinct-string-parse/test
+  ghc-options:          -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:   hspec-discover:hspec-discover
+  build-depends:        hw-string-parse
+
+test-suite succinct-string-parse--doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+                      , succinct-string-parse
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       components/succinct-string-parse/doctest
+  build-tool-depends:   doctest-discover:doctest-discover
+
+library succinct-xml
+  import:             base, config
+                    , array
+                    , attoparsec
+                    , base
+                    , bytestring
+                    , cereal
+                    , containers
+                    , deepseq
+                    , ghc-prim
+                    , hw-bits
+                    , hw-prim
+                    , lens
+                    , mmap
+                    , mtl
+                    , prettyprinter
+                    , resourcet
+                    , succinct-balancedparens
+                    , succinct-parser
+                    , succinct-rankselect
+                    , succinct-rankselect-base
+                    , text
+                    , transformers
+                    , vector
+                    , word8
+  visibility:         public
+  exposed-modules:    Data.Succinct.Xml
+                      Data.Succinct.Xml.Blank
+                      Data.Succinct.Xml.CharLike
+                      Data.Succinct.Xml.Decode
+                      Data.Succinct.Xml.DecodeError
+                      Data.Succinct.Xml.DecodeResult
+                      Data.Succinct.Xml.Grammar
+                      Data.Succinct.Xml.Index
+                      Data.Succinct.Xml.Internal.BalancedParens
+                      Data.Succinct.Xml.Internal.ByteString
+                      Data.Succinct.Xml.Internal.Blank
+                      Data.Succinct.Xml.Internal.List
+                      Data.Succinct.Xml.Internal.Show
+                      Data.Succinct.Xml.Internal.Tables
+                      Data.Succinct.Xml.Internal.ToIbBp64
+                      Data.Succinct.Xml.Internal.Words
+                      Data.Succinct.Xml.Lens
+                      Data.Succinct.Xml.Succinct
+                      Data.Succinct.Xml.Succinct.Cursor
+                      Data.Succinct.Xml.Succinct.Cursor.BalancedParens
+                      Data.Succinct.Xml.Succinct.Cursor.BlankedXml
+                      Data.Succinct.Xml.Succinct.Cursor.Create
+                      Data.Succinct.Xml.Succinct.Cursor.InterestBits
+                      Data.Succinct.Xml.Succinct.Cursor.Internal
+                      Data.Succinct.Xml.Succinct.Cursor.Load
+                      Data.Succinct.Xml.Succinct.Cursor.Types
+                      Data.Succinct.Xml.Succinct.Cursor.MMap
+                      Data.Succinct.Xml.Succinct.Cursor.Token
+                      Data.Succinct.Xml.Succinct.Index
+                      Data.Succinct.Xml.RawDecode
+                      Data.Succinct.Xml.RawValue
+                      Data.Succinct.Xml.Token.Tokenize
+                      Data.Succinct.Xml.Token.Types
+                      Data.Succinct.Xml.Token
+                      Data.Succinct.Xml.Type
+                      Data.Succinct.Xml.Value
+  other-modules:      Paths_succinct
+  autogen-modules:    Paths_succinct
+  hs-source-dirs:     components/succinct-xml/src
+  ghc-options:        -Wall -O2 -msse4.2
+
+executable succinct-xml--app
+  import:               base, config
+                      , attoparsec
+                      , bytestring
+                      , deepseq
+                      , generic-lens
+                      , hw-bits
+                      , hw-prim
+                      , lens
+                      , mmap
+                      , mtl
+                      , optparse-applicative
+                      , resourcet
+                      , succinct-balancedparens
+                      , succinct-rankselect
+                      , succinct-xml
+                      , text
+                      , vector
+  main-is:              Main.hs
+  other-modules:        App.Commands
+                        App.Commands.Count
+                        App.Commands.CreateBlankedXml
+                        App.Commands.CreateBpIndex
+                        App.Commands.CreateIbIndex
+                        App.Commands.CreateIndex
+                        App.Commands.Demo
+                        App.Commands.Types
+                        App.Options
+                        App.XPath.Parser
+                        App.XPath.Types
+                        App.Show
+                        App.Naive
+  hs-source-dirs:       components/succinct-xml/app
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N -O2 -Wall -msse4.2
+
+test-suite succinct-xml--test
+  import:             base, config
+                    , attoparsec
+                    , base
+                    , bytestring
+                    , hedgehog
+                    , hspec
+                    , hw-bits
+                    , hw-hspec-hedgehog
+                    , hw-prim
+                    , succinct-balancedparens
+                    , succinct-rankselect
+                    , succinct-rankselect-base
+                    , succinct-xml
+                    , text
+                    , vector
+  type:               exitcode-stdio-1.0
+  main-is:            Spec.hs
+  hs-source-dirs:     components/succinct-xml/test
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  default-language:   Haskell2010
+  build-tool-depends: hspec-discover:hspec-discover
+  other-modules:      Data.Succinct.Xml.Internal.BlankSpec
+                      Data.Succinct.Xml.RawValueSpec
+                      Data.Succinct.Xml.Succinct.Cursor.BalancedParensSpec
+                      Data.Succinct.Xml.Succinct.Cursor.BlankedXmlSpec
+                      Data.Succinct.Xml.Succinct.Cursor.InterestBitsSpec
+                      Data.Succinct.Xml.Succinct.CursorSpec.Make
+                      Data.Succinct.Xml.Succinct.CursorSpec
+                      Data.Succinct.Xml.Token.TokenizeSpec
+                      Data.Succinct.Xml.TypeSpec
+
+benchmark succinct-xml--bench
+  import:             base, config
+                    , bytestring
+                    , criterion
+                    , hw-bits
+                    , hw-prim
+                    , mmap
+                    , resourcet
+                    , succinct-balancedparens
+                    , succinct-xml
+                    , vector
+  type:               exitcode-stdio-1.0
+  main-is:            Main.hs
+  hs-source-dirs:     components/succinct-xml/bench
+  ghc-options:        -O2 -Wall -msse4.2
+
+test-suite succinct-xml--doctest
+  import:             base, config
+                    , doctest
+                    , doctest-discover
+                    , succinct-xml
+  type:               exitcode-stdio-1.0
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  main-is:            DoctestDriver.hs
+  HS-Source-Dirs:     components/succinct-xml/doctest
+  build-tool-depends: doctest-discover:doctest-discover
