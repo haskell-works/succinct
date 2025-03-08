@@ -9,7 +9,7 @@ module App.Data.ColumnDesc
 
 import Control.Lens
 import Data.Generics.Product.Any
-import Data.Text
+import Data.Text (Text)
 import GHC.Generics
 
 import qualified Data.ByteString                   as BS

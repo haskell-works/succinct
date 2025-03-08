@@ -12,7 +12,7 @@ maintainer:             newhoggy@gmail.com
 copyright:              2016-2024 John Ky
 license:                BSD-3-Clause
 license-file:           LICENSE
-tested-with:            GHC == 9.10.1, GHC == 9.8.4, GHC == 9.6.6, GHC == 9.4.8
+tested-with:            GHC == 9.12.1, GHC == 9.10.1, GHC == 9.8.4, GHC == 9.6.6, GHC == 9.4.8
 build-type:             Simple
 extra-source-files:     README.md
                         components/succinct-dsv/data/bench/data-0001000.csv

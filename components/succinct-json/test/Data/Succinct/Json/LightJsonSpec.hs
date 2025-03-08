@@ -6,7 +6,7 @@
 module Data.Succinct.Json.LightJsonSpec (spec) where
 
 import Control.Monad
-import Data.Text
+import Data.Text (Text)
 import Data.Succinct.BalancedParens.BalancedParens
 import HaskellWorks.Data.Bits.BitWise
 import Data.Succinct.Json.DecodeError
@@ -79,7 +79,7 @@ genSpec :: forall t u.
   => String -> (String -> GenericCursor BS.ByteString t u) -> SpecWith ()
 genSpec t makeCursor = do
   describe ("Json cursor of type " ++ t) $ do
-    let forJson s f = describe ("of value " ++ show s) (f (makeCursor s))
+    let forJson s f = describe ("of value " <> show s) (f (makeCursor s))
     forJson "{}" $ \cursor -> do
       it "should have correct value"      $ requireTest $ jsonValueVia (Just cursor) === Right (JsonObject [])
     forJson " {}" $ \cursor -> do
