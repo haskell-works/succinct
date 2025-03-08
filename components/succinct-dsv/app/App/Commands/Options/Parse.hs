@@ -6,7 +6,7 @@ module App.Commands.Options.Parse
   , rangeJoinColumn
   ) where
 
-import Data.Text
+import Data.Text (Text)
 import Options.Applicative
 import Text.Read           (readEither)
 
